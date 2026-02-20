@@ -31,6 +31,8 @@ class Aboyuma_Product_Manager_Activator {
 	 */
 	public static function activate() {
 
+		// Init database
+		require_once plugin_dir_path(__FILE__) . 'database/class-aboyuma-product-manager-database.php';
+		Aboyuma_Product_Manager_Database::install();
 	}
-
 }
