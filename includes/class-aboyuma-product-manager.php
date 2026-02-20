@@ -67,7 +67,7 @@ class Aboyuma_Product_Manager {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'ABOYUMA_PRODUCT_MANAGER_VERSION' ) ) {
+		if (defined('ABOYUMA_PRODUCT_MANAGER_VERSION')) {
 			$this->version = ABOYUMA_PRODUCT_MANAGER_VERSION;
 		} else {
 			$this->version = '1.0.0';
@@ -78,7 +78,6 @@ class Aboyuma_Product_Manager {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -103,27 +102,26 @@ class Aboyuma_Product_Manager {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-aboyuma-product-manager-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-aboyuma-product-manager-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-aboyuma-product-manager-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-aboyuma-product-manager-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-aboyuma-product-manager-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-aboyuma-product-manager-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-aboyuma-product-manager-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-aboyuma-product-manager-public.php';
 
 		$this->loader = new Aboyuma_Product_Manager_Loader();
-
 	}
 
 	/**
@@ -139,8 +137,7 @@ class Aboyuma_Product_Manager {
 
 		$plugin_i18n = new Aboyuma_Product_Manager_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
+		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
 
 	/**
@@ -152,11 +149,12 @@ class Aboyuma_Product_Manager {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Aboyuma_Product_Manager_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Aboyuma_Product_Manager_Admin($this->get_plugin_name(), $this->get_version());
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+		
+		$this->loader->add_action('admin_menu', $plugin_admin, 'aboyuma_product_menu');
 	}
 
 	/**
@@ -168,11 +166,10 @@ class Aboyuma_Product_Manager {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Aboyuma_Product_Manager_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Aboyuma_Product_Manager_Public($this->get_plugin_name(), $this->get_version());
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 	}
 
 	/**
@@ -214,5 +211,4 @@ class Aboyuma_Product_Manager {
 	public function get_version() {
 		return $this->version;
 	}
-
 }
