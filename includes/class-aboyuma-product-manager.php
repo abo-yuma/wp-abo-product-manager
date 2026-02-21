@@ -153,8 +153,14 @@ class Aboyuma_Product_Manager {
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-		
+
+		// ==============================
+		// ABOYUMA Custom hooks
+		// ==============================
+		// Add admin menu action
 		$this->loader->add_action('admin_menu', $plugin_admin, 'aboyuma_product_menu');
+		// AJAX hook
+		$this->loader->add_action('wp_ajax_get_subcategories', $plugin_admin, 'get_subcategories');
 	}
 
 	/**

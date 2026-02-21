@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * Custom database creation class.
+ *
+ * This is used to create database schema when plugin is activated.
+ *
+ *
+ * @since      1.0.0
+ * @package    Aboyuma_Product_Manager
+ * @subpackage Aboyuma_Product_Manager/includes
+ * @author     Yuma <yuma.dev03@gmail.com>
+ */
+
 defined('ABSPATH') || exit;
 
 class Aboyuma_Product_Manager_Database {
@@ -210,80 +223,80 @@ class Aboyuma_Product_Manager_Database {
                 $productCategoryTable,
                 'fk_aboyuma_category_parent',
                 "ALTER TABLE $productCategoryTable
-			  ADD CONSTRAINT fk_aboyuma_category_parent
-			  FOREIGN KEY (parent_id)
-			  REFERENCES $productCategoryTable(id)
-			  ON DELETE SET NULL"
+                ADD CONSTRAINT fk_aboyuma_category_parent
+                FOREIGN KEY (parent_id)
+                REFERENCES $productCategoryTable(id)
+                ON DELETE SET NULL"
             ],
 
             [
                 $productPropertyPivotTable,
                 'fk_aboyuma_property_product',
                 "ALTER TABLE $productPropertyPivotTable
-			  ADD CONSTRAINT fk_aboyuma_property_product
-			  FOREIGN KEY (product_id)
-			  REFERENCES $productTable(id)
-			  ON DELETE CASCADE"
+                ADD CONSTRAINT fk_aboyuma_property_product
+                FOREIGN KEY (product_id)
+                REFERENCES $productTable(id)
+                ON DELETE CASCADE"
             ],
 
             [
                 $productPropertyPivotTable,
                 'fk_aboyuma_property_definition',
                 "ALTER TABLE $productPropertyPivotTable
-			  ADD CONSTRAINT fk_aboyuma_property_definition
-			  FOREIGN KEY (property_id)
-			  REFERENCES $productPropertyTable(id)
-			  ON DELETE CASCADE"
+                ADD CONSTRAINT fk_aboyuma_property_definition
+                FOREIGN KEY (property_id)
+                REFERENCES $productPropertyTable(id)
+                ON DELETE CASCADE"
             ],
 
             [
                 $productTable,
                 'fk_aboyuma_product_brand',
                 "ALTER TABLE $productTable
-			  ADD CONSTRAINT fk_aboyuma_product_brand
-			  FOREIGN KEY (product_brand_id)
-			  REFERENCES $productBrandTable(id)
-			  ON DELETE SET NULL"
+                ADD CONSTRAINT fk_aboyuma_product_brand
+                FOREIGN KEY (product_brand_id)
+                REFERENCES $productBrandTable(id)
+                ON DELETE SET NULL"
             ],
 
             [
                 $productTable,
                 'fk_aboyuma_product_category',
                 "ALTER TABLE $productTable
-			  ADD CONSTRAINT fk_aboyuma_product_category
-			  FOREIGN KEY (product_category_id)
-			  REFERENCES $productCategoryTable(id)
-			  ON DELETE SET NULL"
+                ADD CONSTRAINT fk_aboyuma_product_category
+                FOREIGN KEY (product_category_id)
+                REFERENCES $productCategoryTable(id)
+                ON DELETE SET NULL"
             ],
 
             [
                 $productTagTable,
                 'fk_aboyuma_tag_product',
                 "ALTER TABLE $productTagTable
-			  ADD CONSTRAINT fk_aboyuma_tag_product
-			  FOREIGN KEY (product_id)
-			  REFERENCES $productTable(id)
-			  ON DELETE CASCADE"
+                ADD CONSTRAINT fk_aboyuma_tag_product
+                FOREIGN KEY (product_id)
+                REFERENCES $productTable(id)
+                ON DELETE CASCADE"
             ],
 
             [
                 $productImageTable,
                 'fk_aboyuma_image_product',
                 "ALTER TABLE $productImageTable
-			  ADD CONSTRAINT fk_aboyuma_image_product
-			  FOREIGN KEY (product_id)
-			  REFERENCES $productTable(id)
-			  ON DELETE CASCADE"
+                ADD CONSTRAINT fk_aboyuma_image_product
+                FOREIGN KEY (product_id)
+                REFERENCES $productTable(id)
+                ON DELETE CASCADE"
             ],
 
             [
                 $productVideoTable,
                 'fk_aboyuma_video_product',
                 "ALTER TABLE $productVideoTable
-			  ADD CONSTRAINT fk_aboyuma_video_product
-			  FOREIGN KEY (product_id)
-			  REFERENCES $productTable(id)
-			  ON DELETE CASCADE"
+                ADD CONSTRAINT fk_aboyuma_video_product
+                FOREIGN KEY (product_id)
+                REFERENCES $productTable(id)
+                ON DELETE CASCADE"
             ],
         ];
 
