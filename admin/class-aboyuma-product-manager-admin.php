@@ -60,17 +60,27 @@ class Aboyuma_Product_Manager_Admin {
 	 */
 	public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Aboyuma_Product_Manager_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Aboyuma_Product_Manager_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+		if (! $this->is_allowed_admin_page()) {
+			return;
+		}
+
+		// Bootstrap5 css
+		wp_enqueue_style(
+			'bootstrap-css',
+			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
+			array(),
+			'5.3.2',
+			'all' // Media type
+		);
+
+		// jQuery DataTables CSS
+		wp_enqueue_style(
+			'datatables-css',
+			'https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css',
+			array(),
+			'1.13.8',
+			'all'
+		);
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/aboyuma-product-manager-admin.css', array(), $this->version, 'all');
 	}
@@ -82,174 +92,68 @@ class Aboyuma_Product_Manager_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Aboyuma_Product_Manager_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Aboyuma_Product_Manager_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+		if (! $this->is_allowed_admin_page()) {
+			return;
+		}
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/aboyuma-product-manager-admin.js', array('jquery'), $this->version, false);
+		// Bootstrap 5 Bundle (Includes Popper)
+		wp_enqueue_script(
+			'bootstrap-js',
+			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js',
+			array('jquery'),
+			'5.3.2',
+			true
+		);
+
+		// jQuery DataTables
+		wp_enqueue_script(
+			'datatables-js',
+			'https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js',
+			array('jquery'),
+			'1.13.8',
+			true
+		);
+
+		// Main admin script
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url(__FILE__) . 'js/aboyuma-product-manager-admin.js',
+			array('jquery', 'bootstrap-js', 'datatables-js'),
+			$this->version,
+			false
+		);
+	}
+
+	/**
+	 * Check whether current admin page belongs to Aboyuma plugin.
+	 *
+	 * @return bool
+	 */
+	private function is_allowed_admin_page() {
 
 		if (! isset($_GET['page'])) {
-			return;
+			return false;
 		}
 
 		$current_page = sanitize_key($_GET['page']);
 
-		/**
-		 * ==========================================================
-		 * GLOBAL ASSETS (Shared Across All ABOYUMA Admin Pages)
-		 * ==========================================================
-		 */
-
-		// WordPress Media Library (image uploader)
-		wp_enqueue_media();
-
-		// Drag & Drop Sorting
-		wp_enqueue_script('jquery-ui-sortable');
-
-		// Shared Media Handler (Add/Edit)
-		wp_enqueue_script(
-			'aboyuma-product-media',
-			plugin_dir_url(__FILE__) . 'js/aboyuma-product-media.js',
-			array('jquery'),
-			$this->version,
-			false
+		$allowed_pages = array(
+			'aboyuma-product-list',
+			'aboyuma-product-add',
+			'aboyuma-product-detail',
+			'aboyuma-product-edit',
+			'aboyuma-product-property-list',
+			'aboyuma-product-property-add',
+			'aboyuma-product-property-edit',
+			'aboyuma-product-brand-list',
+			'aboyuma-product-brand-add',
+			'aboyuma-product-brand-edit',
+			'aboyuma-product-category-list',
+			'aboyuma-product-category-add',
+			'aboyuma-product-category-edit',
 		);
 
-		wp_localize_script(
-			'aboyuma-product-media',
-			'aboyumaProductMedia',
-			array(
-				'ajax_url' => admin_url('admin-ajax.php'),
-				'nonce'    => wp_create_nonce('aboyuma_product_media_nonce'),
-			)
-		);
-
-		/**
-		 * ==========================================================
-		 * PRODUCT SECTION
-		 * ==========================================================
-		 * Pages:
-		 * - Add Product
-		 * - Edit Product
-		 */
-
-		if (
-			$current_page === 'aboyuma-product-add' ||
-			$current_page === 'aboyuma-product-edit'
-		) {
-
-			wp_enqueue_style(
-				'aboyuma-product-admin',
-				plugin_dir_url(__FILE__) . 'css/aboyuma-product-admin.css',
-				array(),
-				$this->version,
-				'all'
-			);
-
-			wp_enqueue_script(
-				'aboyuma-product-admin',
-				plugin_dir_url(__FILE__) . 'js/aboyuma-product-admin.js',
-				array('jquery', 'aboyuma-product-media'),
-				$this->version,
-				false
-			);
-		}
-
-		/**
-		 * ==========================================================
-		 * PRODUCT CATEGORY SECTION
-		 * ==========================================================
-		 * Pages:
-		 * - Category List
-		 */
-
-		if ($current_page === 'aboyuma-product-category-list') {
-
-			wp_enqueue_script(
-				'aboyuma-product-category-delete',
-				plugin_dir_url(__FILE__) . 'js/aboyuma-product-category-delete.js',
-				array('jquery'),
-				$this->version,
-				false
-			);
-
-			wp_localize_script(
-				'aboyuma-product-category-delete',
-				'aboyumaProductCategoryDelete',
-				array(
-					'ajaxurl' => admin_url('admin-ajax.php'),
-					'nonce'   => wp_create_nonce('aboyuma_product_category_delete_nonce')
-				)
-			);
-		}
-
-		/**
-		 * ==========================================================
-		 * PRODUCT PROPERTY SECTION
-		 * ==========================================================
-		 * Pages:
-		 * - Property List
-		 */
-
-		if ($current_page === 'aboyuma-product-property-list') {
-
-			wp_enqueue_script(
-				'aboyuma-product-property-delete',
-				plugin_dir_url(__FILE__) . 'js/aboyuma-product-property-delete.js',
-				array('jquery'),
-				$this->version,
-				false
-			);
-
-			wp_localize_script(
-				'aboyuma-product-property-delete',
-				'aboyumaProductPropertyDelete',
-				array(
-					'ajaxurl' => admin_url('admin-ajax.php'),
-					'nonce'   => wp_create_nonce('aboyuma_product_property_delete_nonce'),
-				)
-			);
-		}
-
-		/**
-		 * ==========================================================
-		 * PRODUCT BRAND SECTION
-		 * ==========================================================
-		 * Pages:
-		 * - Brand List
-		 * - Add Brand
-		 * - Edit Brand
-		 *
-		 * (Ready for future implementation)
-		 */
-
-		if ($current_page === 'aboyuma-product-brand-list') {
-
-			wp_enqueue_script(
-				'aboyuma-product-brand-delete',
-				plugin_dir_url(__FILE__) . 'js/aboyuma-product-brand-delete.js',
-				array('jquery'),
-				$this->version,
-				false
-			);
-
-			wp_localize_script(
-				'aboyuma-product-brand-delete',
-				'aboyumaProductBrandDelete',
-				array(
-					'ajaxurl' => admin_url('admin-ajax.php'),
-					'nonce'   => wp_create_nonce('aboyuma_product_brand_delete_nonce'),
-				)
-			);
-		}
+		return in_array($current_page, $allowed_pages, true);
 	}
 
 	/**
@@ -259,25 +163,6 @@ class Aboyuma_Product_Manager_Admin {
 	 *
 	 * This method registers the full admin menu hierarchy
 	 * for the Aboyuma Product Manager plugin.
-	 *
-	 * MENU STRUCTURE OVERVIEW:
-	 *
-	 * Amway Products (Top-Level Menu)
-	 * ├── Products (List Page - same slug as parent)
-	 * ├── Product Properties (List Page)
-	 * ├── Brands (List Page)
-	 * ├── Categories (List Page)
-	 *
-	 * Hidden Pages (Not visible in sidebar menu):
-	 * ├── Add Product
-	 * ├── Product Detail
-	 * ├── Edit Product
-	 * ├── Add Property
-	 * ├── Edit Property
-	 * ├── Add Brand
-	 * ├── Edit Brand
-	 * ├── Add Category
-	 * ├── Edit Category
 	 *
 	 * Notes:
 	 * - Hidden pages are registered using `add_submenu_page( null, ... )`
@@ -413,7 +298,7 @@ class Aboyuma_Product_Manager_Admin {
 			'Categories',
 			$productPageCapability,
 			'aboyuma-product-category-list',
-			'aboyuma_product_category_list'
+			array($this, 'aboyuma_product_category_list')
 		);
 		add_submenu_page(
 			null,
@@ -434,27 +319,9 @@ class Aboyuma_Product_Manager_Admin {
 	}
 
 	/**
-	 * ==============================================
-	 * AJAX: Load Subcategories
-	 * ==============================================
+	 * Register menu callback
 	 */
-	public function get_subcategories() {
-
-		global $wpdb;
-
-		$parent_id = isset($_GET['parent_id'])
-			? intval($_GET['parent_id'])
-			: 0;
-
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT id, category_name
-                 FROM {$wpdb->prefix}aboyuma_amway_product_category
-                 WHERE parent_id = %d",
-				$parent_id
-			)
-		);
-
-		wp_send_json($results);
+	public function aboyuma_product_category_list() {
+		require_once plugin_dir_path(__FILE__) . 'partials/template-product-category-list.php';
 	}
 }
