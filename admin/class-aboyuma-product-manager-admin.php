@@ -44,13 +44,25 @@ class Aboyuma_Product_Manager_Admin {
 	 * Category admin module instance.
 	 *
 	 * Handles all category-related admin functionality
-	 * (list, add, edit, etc.).
+	 * (list, add, edit, delete, etc.).
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      Aboyuma_Product_Category_Admin    $category_admin
+	 * @var      Aboyuma_Product_Category_Admin   $category_admin
 	 */
 	private $category_admin;
+
+	/**
+	 * Brand admin module instance.
+	 *
+	 * Handles all brand-related admin functionality
+	 * (list, add, edit, delete, etc.).
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      Aboyuma_Product_Brand_Admin   $brand_admin
+	 */
+	private $brand_admin;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -64,11 +76,13 @@ class Aboyuma_Product_Manager_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		// Include Category Admin Class
+		// Include Admin Class
 		require_once plugin_dir_path(__FILE__) . 'product/category/class-aboyuma-product-category-admin.php';
+		require_once plugin_dir_path(__FILE__) . 'product/brand/class-aboyuma-product-brand-admin.php';
 
-		// Instantiate Category Module
+		// Instantiate Modules
 		$this->category_admin = new Aboyuma_Product_Category_Admin();
+		$this->brand_admin = new Aboyuma_Product_Brand_Admin();
 	}
 
 	/**
@@ -144,7 +158,7 @@ class Aboyuma_Product_Manager_Admin {
 		// Category JS
 		wp_enqueue_script(
 			'aboyuma-product-category-js',
-			plugin_dir_url(__FILE__) . 'js/category/aboyuma-product-category.js',
+			plugin_dir_url(__FILE__) . 'js/aboyuma-product-category.js',
 			array('jquery'),
 			$this->version,
 			false
@@ -156,6 +170,24 @@ class Aboyuma_Product_Manager_Admin {
 			[
 				'ajaxurl' => admin_url('admin-ajax.php'),
 				'nonce'   => wp_create_nonce('aboyuma_product_category_delete'),
+			]
+		);
+
+		// Brand JS
+		wp_enqueue_script(
+			'aboyuma-product-brand-js',
+			plugin_dir_url(__FILE__) . 'js/aboyuma-product-brand.js',
+			array('jquery'),
+			$this->version,
+			false
+		);
+
+		wp_localize_script(
+			'aboyuma-product-brand-js',
+			'productBrandDelete',
+			[
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce'   => wp_create_nonce('aboyuma_product_brand_delete'),
 			]
 		);
 	}
@@ -345,7 +377,7 @@ class Aboyuma_Product_Manager_Admin {
 			'Brands',
 			$capability,
 			'aboyuma-product-brand-list',
-			'aboyuma_product_brand_list'
+			[$this->brand_admin, 'brand_list']
 		);
 
 		add_submenu_page(
@@ -354,7 +386,7 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			$capability,
 			'aboyuma-product-brand-add',
-			'aboyuma_product_brand_add'
+			[$this->brand_admin, 'brand_add']
 		);
 
 		add_submenu_page(
@@ -363,7 +395,7 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			$capability,
 			'aboyuma-product-brand-edit',
-			'aboyuma_product_brand_edit'
+			[$this->brand_admin, 'brand_edit']
 		);
 	}
 }
