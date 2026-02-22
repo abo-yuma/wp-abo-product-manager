@@ -41,6 +41,18 @@ class Aboyuma_Product_Manager_Admin {
 	private $version;
 
 	/**
+	 * Category admin module instance.
+	 *
+	 * Handles all category-related admin functionality
+	 * (list, add, edit, etc.).
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      Aboyuma_Product_Category_Admin    $category_admin
+	 */
+	private $category_admin;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -51,6 +63,12 @@ class Aboyuma_Product_Manager_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+
+		// Include Category Admin Class
+		require_once plugin_dir_path(__FILE__) . 'product/category/class-aboyuma-product-category-admin.php';
+
+		// Instantiate Category Module
+		$this->category_admin = new Aboyuma_Product_Category_Admin();
 	}
 
 	/**
@@ -122,6 +140,24 @@ class Aboyuma_Product_Manager_Admin {
 			$this->version,
 			false
 		);
+
+		// Category JS
+		wp_enqueue_script(
+			'aboyuma-product-category-js',
+			plugin_dir_url(__FILE__) . 'js/category/aboyuma-product-category.js',
+			array('jquery'),
+			$this->version,
+			false
+		);
+
+		wp_localize_script(
+			'aboyuma-product-category-js',
+			'productCategoryDelete',
+			[
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce'   => wp_create_nonce('aboyuma_product_category_delete'),
+			]
+		);
 	}
 
 	/**
@@ -140,7 +176,6 @@ class Aboyuma_Product_Manager_Admin {
 		$allowed_pages = array(
 			'aboyuma-product-list',
 			'aboyuma-product-add',
-			'aboyuma-product-detail',
 			'aboyuma-product-edit',
 			'aboyuma-product-property-list',
 			'aboyuma-product-property-add',
@@ -181,75 +216,79 @@ class Aboyuma_Product_Manager_Admin {
 	 * @since 1.0.0
 	 */
 	public function aboyuma_product_menu() {
-		$productPageTitle = 'Amway Products';
-		$productPageMenuTitle = 'Amway Products';
-		$productPageCapability = 'manage_options';
-		$productPageMenuSlug = 'aboyuma-product-list';
-		$productPageFunction = 'aboyuma_product_list';
-		$productPageIconUrl = 'dashicons-products';
-		$productPagePosition = 25;
+		$capability = 'manage_options';
+		$parent_slug = 'aboyuma-product-list';
+		$icon = 'dashicons-products';
+		$position = 25;
 
+		/**
+		 * ==============================
+		 * MAIN MENU
+		 * ==============================
+		 * Important:
+		 * Callback MUST match first submenu
+		 */
 		add_menu_page(
-			$productPageTitle,
-			$productPageMenuTitle,
-			$productPageCapability,
-			$productPageMenuSlug,
-			$productPageFunction,
-			$productPageIconUrl,
-			$productPagePosition
+			'ABO Product Manager',
+			'ABO Product Manager',
+			$capability,
+			$parent_slug,
+			'aboyuma_product_list', // default page
+			$icon,
+			$position
+		);
+
+		/**
+		 * ==============================
+		 * 1 : PRODUCTS
+		 * ==============================
+		 */
+		add_submenu_page(
+			$parent_slug,
+			'Products',
+			'Products',
+			$capability,
+			$parent_slug,
+			'aboyuma_product_list'
 		);
 
 		add_submenu_page(
-			$productPageMenuSlug,
-			'Products', // Page title
-			'Products', // Menu title
-			$productPageCapability,
-			$productPageMenuSlug, // Use the same slug as the main menu
-			$productPageFunction
-		);
-		add_submenu_page(
 			null,
-			'Add New Product',
+			'Add Product',
 			null,
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-add',
 			'aboyuma_product_add'
 		);
-		// Add submenu page without adding menu 
-		// Ref:https://stackoverflow.com/a/12758400/8527193
-		add_submenu_page(
-			null,
-			'Product Detail',
-			null,
-			$productPageCapability,
-			'aboyuma-product-detail',
-			'aboyuma_product_detail'
-		);
+
 		add_submenu_page(
 			null,
 			'Edit Product',
 			null,
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-edit',
 			'aboyuma_product_edit'
 		);
-		// ==============================
-		// PRODUCT PROPERTIES
-		// ==============================
+
+		/**
+		 * ==============================
+		 * 2 : PRODUCT PROPERTIES
+		 * ==============================
+		 */
 		add_submenu_page(
-			$productPageMenuSlug,
+			$parent_slug,
 			'Product Properties',
 			'Product Properties',
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-property-list',
 			'aboyuma_product_property_list'
 		);
 
 		add_submenu_page(
 			null,
-			'Add New Property',
+			'Add Property',
 			null,
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-property-add',
 			'aboyuma_product_property_add'
 		);
@@ -258,70 +297,73 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			'Edit Property',
 			null,
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-property-edit',
 			'aboyuma_product_property_edit'
 		);
-		// ==============================
-		// PRODUCT BRANDS
-		// ==============================
+
+		/**
+		 * ==============================
+		 * 3 : CATEGORIES
+		 * ==============================
+		 */
 		add_submenu_page(
-			$productPageMenuSlug,
-			'Brands',
-			'Brands',
-			$productPageCapability,
-			'aboyuma-product-brand-list',
-			'aboyuma_product_brand_list'
-		);
-		add_submenu_page(
-			null,
-			'Add New Brand',
-			null,
-			$productPageCapability,
-			'aboyuma-product-brand-add',
-			'aboyuma_product_brand_add'
-		);
-		add_submenu_page(
-			null,
-			'Edit Brand',
-			null,
-			$productPageCapability,
-			'aboyuma-product-brand-edit',
-			'aboyuma_product_brand_edit'
-		);
-		// ==============================
-		// PRODUCT CATEGORIES
-		// ==============================
-		add_submenu_page(
-			$productPageMenuSlug,
+			$parent_slug,
 			'Categories',
 			'Categories',
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-category-list',
-			array($this, 'aboyuma_product_category_list')
+			[$this->category_admin, 'category_list']
 		);
+
 		add_submenu_page(
 			null,
-			'Add New Category',
+			'Add Category',
 			null,
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-category-add',
-			'aboyuma_product_category_add'
+			[$this->category_admin, 'category_add']
 		);
+
 		add_submenu_page(
 			null,
 			'Edit Category',
 			null,
-			$productPageCapability,
+			$capability,
 			'aboyuma-product-category-edit',
-			'aboyuma_product_category_edit'
+			[$this->category_admin, 'category_edit']
 		);
-	}
 
-	/**
-	 * Register menu callback
-	 */
-	public function aboyuma_product_category_list() {
-		require_once plugin_dir_path(__FILE__) . 'partials/template-product-category-list.php';
+		/**
+		 * ==============================
+		 * 4 : BRANDS
+		 * ==============================
+		 */
+		add_submenu_page(
+			$parent_slug,
+			'Brands',
+			'Brands',
+			$capability,
+			'aboyuma-product-brand-list',
+			'aboyuma_product_brand_list'
+		);
+
+		add_submenu_page(
+			null,
+			'Add Brand',
+			null,
+			$capability,
+			'aboyuma-product-brand-add',
+			'aboyuma_product_brand_add'
+		);
+
+		add_submenu_page(
+			null,
+			'Edit Brand',
+			null,
+			$capability,
+			'aboyuma-product-brand-edit',
+			'aboyuma_product_brand_edit'
+		);
 	}
 }
