@@ -6,7 +6,7 @@
  * Handles category admin pages:
  * - List
  * - Add
- * - (Extendable for Edit / Delete / AJAX later)
+ * - (Extendable for Edit / Delete / AJAX)
  *
  * @package    Aboyuma_Product_Manager
  * @subpackage Aboyuma_Product_Manager/admin
@@ -18,23 +18,9 @@ if (! defined('ABSPATH')) {
 
 class Aboyuma_Product_Category_Admin {
 
-    /**
-     * WordPress DB instance
-     *
-     * @var wpdb
-     */
     private $wpdb;
-
-    /**
-     * Category table name
-     *
-     * @var string
-     */
     private $table;
 
-    /**
-     * Constructor
-     */
     public function __construct() {
         global $wpdb;
 
