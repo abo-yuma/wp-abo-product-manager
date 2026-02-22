@@ -28,11 +28,5 @@
    * Although scripts in the WordPress core, Plugins and Themes may be
    * practising this, we should strive to set a better example in our own work.
    */
-
-  $(function () {
-    $("#aboyuma-product-category-table").DataTable({
-      pageLength: 10,
-      searching: true
-    });
-  });
+  
 })(jQuery);
