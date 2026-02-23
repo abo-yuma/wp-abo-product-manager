@@ -22,6 +22,7 @@
                 <th>ID</th>
                 <th>Property key</th>
                 <th>Property Name</th>
+                <th>Property Type</th>
                 <th>Created</th>
                 <th>Modified</th>
                 <th>Actions</th>
@@ -42,6 +43,10 @@
 
                         <td>
                             <?php echo esc_html($row->property_name); ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html($row->property_type); ?>
                         </td>
 
                         <td>

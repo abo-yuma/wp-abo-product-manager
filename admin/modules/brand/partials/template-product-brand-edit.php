@@ -21,21 +21,6 @@
         <table class="form-table">
             <tr>
                 <th scope="row">
-                    <label for="brand_name">Brand Name</label>
-                </th>
-                <td>
-                    <input
-                        type="text"
-                        name="brand_name"
-                        id="brand_name"
-                        class="regular-text"
-                        value="<?php echo esc_attr($form_data['brand_name']); ?>"
-                        required />
-                </td>
-            </tr>
-
-            <tr>
-                <th scope="row">
                     <label for="brand_image_url">Brand Image URL</label>
                 </th>
                 <td>
@@ -46,6 +31,22 @@
                         class="regular-text"
                         value="<?php echo esc_attr($form_data['brand_image_url']); ?>"
                         required />
+                    <p class="description">ป้อน URL ที่ถูกต้องซึ่งชี้ไปยังรูปภาพของแบรนด์ แนะนำให้ใช้ลิงก์จาก official Amway website</p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="brand_name">Brand Name</label>
+                </th>
+                <td>
+                    <input
+                        type="text"
+                        name="brand_name"
+                        id="brand_name"
+                        class="regular-text"
+                        value="<?php echo esc_attr($form_data['brand_name']); ?>"
+                        required />
+                    <p class="description">ชื่อแบรนด์ เช่น Nutrilite แนะนำให้ใช้เป็นภาษาอังกฤษ</p>
                 </td>
             </tr>
         </table>

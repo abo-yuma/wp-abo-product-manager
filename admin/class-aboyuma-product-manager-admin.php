@@ -51,6 +51,7 @@ class Aboyuma_Product_Manager_Admin {
 	private $category_admin;
 	private $brand_admin;
 	private $property_admin;
+	private $product_admin;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -68,11 +69,13 @@ class Aboyuma_Product_Manager_Admin {
 		require_once plugin_dir_path(__FILE__) . 'modules/category/class-aboyuma-product-category-admin.php';
 		require_once plugin_dir_path(__FILE__) . 'modules/brand/class-aboyuma-product-brand-admin.php';
 		require_once plugin_dir_path(__FILE__) . 'modules/product-property/class-aboyuma-product-property-admin.php';
+		require_once plugin_dir_path(__FILE__) . 'modules/product/class-aboyuma-product-admin.php';
 
 		// Instantiate admin modules
 		$this->category_admin = new Aboyuma_Product_Category_Admin();
 		$this->brand_admin = new Aboyuma_Product_Brand_Admin();
 		$this->property_admin = new Aboyuma_Product_Property_Admin();
+		$this->product_admin = new Aboyuma_Product_Admin();
 	}
 
 	/**
@@ -281,7 +284,7 @@ class Aboyuma_Product_Manager_Admin {
 			'ABO YUMA Product Manager',
 			$capability,
 			$parent_slug,
-			'aboyuma_product_list', // default page
+			[$this->product_admin, 'product_list'], // default page
 			$icon,
 			$position
 		);
@@ -297,7 +300,7 @@ class Aboyuma_Product_Manager_Admin {
 			'Products',
 			$capability,
 			$parent_slug,
-			'aboyuma_product_list'
+			[$this->product_admin, 'product_list']
 		);
 
 		add_submenu_page(
@@ -306,7 +309,7 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			$capability,
 			'aboyuma-product-add',
-			'aboyuma_product_add'
+			[$this->product_admin, 'product_add']
 		);
 
 		add_submenu_page(

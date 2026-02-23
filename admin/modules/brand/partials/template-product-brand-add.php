@@ -12,21 +12,21 @@
         <input type="hidden" name="action" value="aboyuma_brand_add">
 
         <table class="form-table">
-            <!-- Product Image URL -->
+            <!-- Brand Image URL -->
             <tr>
                 <th scope="row"><label for="brand_image_url">Brand Image URL</label></th>
                 <td>
                     <input type="url" name="brand_image_url" id="brand_image_url" class="regular-text" required>
-                    <p class="detail">ป้อน URL ที่ถูกต้องซึ่งชี้ไปยังรูปภาพของแบรนด์ แนะนำให้ใช้ลิงก์จาก official Amway website</p>
+                    <p class="description">ป้อน URL ที่ถูกต้องซึ่งชี้ไปยังรูปภาพของแบรนด์ แนะนำให้ใช้ลิงก์จาก official Amway website</p>
                 </td>
             </tr>
             </tr>
-            <!-- Product Name -->
+            <!-- Brand Name -->
             <tr>
                 <th scope="row"><label for="brand_name">Brand Name</label></th>
                 <td>
                     <input type="text" name="brand_name" id="brand_name" class="regular-text" required>
-                    <p class="detail">ชื่อแบรนด์ เช่น Nutrilite แนะนำให้ใช้เป็นภาษาอังกฤษ</p>
+                    <p class="description">ชื่อแบรนด์ เช่น Nutrilite แนะนำให้ใช้เป็นภาษาอังกฤษ</p>
                 </td>
             </tr>
         </table>
