@@ -19,8 +19,7 @@ if (isset($_GET['updated-success']) && $_GET['updated-success'] === 'true') : ?>
 
     <hr class="wp-header-end">
 
-    <table id="aboyuma-product-brand-table"
-        class="wp-list-table widefat fixed striped">
+    <table id="aboyuma-product-brand-table" class="wp-list-table widefat fixed striped">
 
         <thead>
             <tr>

@@ -1,15 +1,16 @@
 <?php
 
 /**
- * Category Admin functionality
+ * Product Category Admin functionality.
  *
- * Handles category admin pages:
+ * Handles product category admin :
  * - List
  * - Add
- * - (Extendable for Edit / Delete / AJAX)
+ * - Edit
+ * - Delete (AJAX)
  *
  * @package    Aboyuma_Product_Manager
- * @subpackage Aboyuma_Product_Manager/admin
+ * @subpackage Aboyuma_Product_Manager/admin/modules/category
  */
 
 if (! defined('ABSPATH')) {

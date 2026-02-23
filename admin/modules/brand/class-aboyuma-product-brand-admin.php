@@ -1,18 +1,17 @@
 <?php
 
 /**
- * Brand Admin functionality.
+ * Product Brand Admin functionality.
  *
- * Handles Brand admin pages:
+ * Handles product brand admin :
  * - List
  * - Add
  * - Edit
  * - Delete (AJAX)
  *
  * @package    Aboyuma_Product_Manager
- * @subpackage Admin/Product/Brand
+ * @subpackage Aboyuma_Product_Manager/admin/modules/brand
  */
-
 if (! defined('ABSPATH')) {
     exit; // Prevent direct access.
 }

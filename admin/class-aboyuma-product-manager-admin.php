@@ -41,28 +41,16 @@ class Aboyuma_Product_Manager_Admin {
 	private $version;
 
 	/**
-	 * Category admin module instance.
+	 * Admin module instances.
 	 *
-	 * Handles all category-related admin functionality
-	 * (list, add, edit, delete, etc.).
+	 * These objects handle admin functionality such as
+	 * listing, creating, editing, and deleting records.
 	 *
 	 * @since    1.0.0
-	 * @access   private
-	 * @var      Aboyuma_Product_Category_Admin   $category_admin
 	 */
 	private $category_admin;
-
-	/**
-	 * Brand admin module instance.
-	 *
-	 * Handles all brand-related admin functionality
-	 * (list, add, edit, delete, etc.).
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      Aboyuma_Product_Brand_Admin   $brand_admin
-	 */
 	private $brand_admin;
+	private $property_admin;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -76,13 +64,14 @@ class Aboyuma_Product_Manager_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		// Include Admin Class
-		require_once plugin_dir_path(__FILE__) . 'product/category/class-aboyuma-product-category-admin.php';
-		require_once plugin_dir_path(__FILE__) . 'product/brand/class-aboyuma-product-brand-admin.php';
-
-		// Instantiate Modules
+		// Require admin module classes
+		require_once plugin_dir_path(__FILE__) . 'modules/category/class-aboyuma-product-category-admin.php';
+		require_once plugin_dir_path(__FILE__) . 'modules/brand/class-aboyuma-product-brand-admin.php';
+		require_once plugin_dir_path(__FILE__) . 'modules/product-property/class-aboyuma-product-property-admin.php';
+		// Instantiate admin modules
 		$this->category_admin = new Aboyuma_Product_Category_Admin();
 		$this->brand_admin = new Aboyuma_Product_Brand_Admin();
+		$this->property_admin = new Aboyuma_Product_Property_Admin();
 	}
 
 	/**
@@ -155,15 +144,6 @@ class Aboyuma_Product_Manager_Admin {
 			false
 		);
 
-		// Category JS
-		wp_enqueue_script(
-			'aboyuma-product-category-js',
-			plugin_dir_url(__FILE__) . 'js/aboyuma-product-category.js',
-			array('jquery'),
-			$this->version,
-			false
-		);
-
 		wp_localize_script(
 			'aboyuma-product-category-js',
 			'productCategoryDelete',
@@ -171,15 +151,6 @@ class Aboyuma_Product_Manager_Admin {
 				'ajaxurl' => admin_url('admin-ajax.php'),
 				'nonce'   => wp_create_nonce('aboyuma_product_category_delete'),
 			]
-		);
-
-		// Brand JS
-		wp_enqueue_script(
-			'aboyuma-product-brand-js',
-			plugin_dir_url(__FILE__) . 'js/aboyuma-product-brand.js',
-			array('jquery'),
-			$this->version,
-			false
 		);
 
 		wp_localize_script(
@@ -190,6 +161,7 @@ class Aboyuma_Product_Manager_Admin {
 				'nonce'   => wp_create_nonce('aboyuma_product_brand_delete'),
 			]
 		);
+	
 	}
 
 	/**
@@ -313,7 +285,7 @@ class Aboyuma_Product_Manager_Admin {
 			'Product Properties',
 			$capability,
 			'aboyuma-product-property-list',
-			'aboyuma_product_property_list'
+			[$this->property_admin, 'property_list']
 		);
 
 		add_submenu_page(
@@ -322,7 +294,7 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			$capability,
 			'aboyuma-product-property-add',
-			'aboyuma_product_property_add'
+			[$this->property_admin, 'property_add']
 		);
 
 		add_submenu_page(
@@ -331,7 +303,7 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			$capability,
 			'aboyuma-product-property-edit',
-			'aboyuma_product_property_edit'
+			[$this->property_admin, 'property_edit']
 		);
 
 		/**
