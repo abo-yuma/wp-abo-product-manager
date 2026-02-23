@@ -50,6 +50,7 @@ class Aboyuma_Product_Property_Admin {
             id,
             property_key,
             property_name,
+            property_type,
             created,
             modified
         FROM {$this->table}
@@ -103,10 +104,7 @@ class Aboyuma_Product_Property_Admin {
         $property_type        = sanitize_text_field($_POST['property_type'] ?? '');
         $property_description = wp_kses_post($_POST['property_description'] ?? '');
 
-        // -------------------------
         // Validation (Guard Clause)
-        // -------------------------
-
         if ($property_key === '') {
             Aboyuma_Flash_Helper::redirect(
                 'error',
@@ -139,10 +137,7 @@ class Aboyuma_Product_Property_Admin {
             );
         }
 
-        // -------------------------
         // Insert
-        // -------------------------
-
         $inserted = $this->wpdb->insert(
             $this->table,
             [

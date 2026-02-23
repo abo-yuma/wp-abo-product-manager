@@ -3,8 +3,9 @@
 A custom WordPress plugin built on top of the [WordPress Plugin Boilerplate (wppb.me)](https://wppb.me/).
 
 This project extends and restructures the default boilerplate to simplify development and improve maintainability.  
-The admin modules are specifically designed for Amway products.
-This plugin is built exclusively for use with the ABO YUMA WordPress theme.
+It is specifically designed for Amway products and built exclusively for use with the ABO YUMA WordPress theme.
+
+The plugin automatically registers product listing and product detail page, making them ready for front-end display.
 
 ---
 
@@ -14,6 +15,13 @@ This plugin is built exclusively for use with the ABO YUMA WordPress theme.
 - Product Property (CRUD)
 - Product Brand (CRUD)
 - Product Category (CRUD)
+
+---
+
+## 🌐 Public-Facing Features
+
+- Product listing with jQuery DataTables and AJAX search filtering
+- Dynamic product detail page
 
 ---
 
@@ -49,3 +57,11 @@ The theme must be installed and activated before using this plugin.
 ## 🚧 Status
 
 Active development. Structure refactoring and validation improvements in progress.
+
+---
+
+## 📌 TODO
+
+- Integrate PHP CodeSniffer (PHPCS) for automated code quality checks
+- Gradually align the codebase with WordPress PHP Coding Standards (WPCS)
+- Refactor and improve Admin modules for better maintainability
