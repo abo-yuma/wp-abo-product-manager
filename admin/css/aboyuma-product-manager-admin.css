@@ -2,3 +2,7 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+.wp-list-table .column-image img {
+  width: 150px;
+  height: auto;
+}

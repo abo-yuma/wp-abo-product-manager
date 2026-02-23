@@ -1,25 +1,21 @@
-<?php
-if (!defined('ABSPATH')) {
-    exit;
-}
-
-if (isset($_GET['updated-success']) && $_GET['updated-success'] === 'true') : ?>
-    <div class="notice notice-success is-dismissible">
-        <p>Brand updated successfully!</p>
-    </div>
-<?php endif; ?>
-
 <div class="wrap">
-    <h1 class="wp-heading-inline">Product Brand</h1>
-
-    <a href="<?php echo admin_url('admin.php?page=aboyuma-product-brand-add'); ?>"
+    <h1 class="wp-heading-inline">Product Brands</h1>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-brand-add')); ?>"
         class="page-title-action">
         Add New
     </a>
-
     <hr class="wp-header-end">
 
-    <table id="aboyuma-product-brand-table" class="wp-list-table widefat fixed striped">
+    <?php if (
+        ! empty($status_message['status']['type'])
+        && ! empty($status_message['status']['message'])
+    ) : ?>
+        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
+            <p><?php echo esc_html($status_message['status']['message']); ?></p>
+        </div>
+    <?php endif; ?>
+
+    <table id="aboyuma-product-brand-table" class="wp-list-table widefat striped">
 
         <thead>
             <tr>
@@ -35,7 +31,7 @@ if (isset($_GET['updated-success']) && $_GET['updated-success'] === 'true') : ?>
             <?php if (!empty($brands)) : ?>
                 <?php foreach ($brands as $row) : ?>
                     <tr>
-                        <td>
+                        <td class="column-image">
                             <img src="<?php echo esc_url($row->brand_image_url); ?>"
                                 width="100%" height="auto">
                         </td>
