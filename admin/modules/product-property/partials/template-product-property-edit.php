@@ -1,59 +1,37 @@
-<?php
-// Expect $row to be passed from controller
-if (! isset($row)) {
-    echo '<div class="notice notice-error"><p>Invalid property.</p></div>';
-    return;
-}
-
-/**
- * Prepare form values
- * Priority:
- * 1. POST (if validation failed)
- * 2. Database value
- */
-$name = isset($_POST['property_name'])
-    ? sanitize_text_field($_POST['property_name'])
-    : $row->property_name;
-
-$type = isset($_POST['property_type'])
-    ? sanitize_text_field($_POST['property_type'])
-    : $row->property_type;
-
-$description = isset($_POST['property_description'])
-    ? wp_kses_post($_POST['property_description'])
-    : $row->property_description;
-?>
-
 <div class="wrap">
-    <h1 class="wp-heading-inline">Edit Property</h1>
-
-    <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-property-list')); ?>"
-        class="page-title-action">
-        Back to List
-    </a>
-
+    <h1 class="wp-heading-inline">Edit Product Property</h1>
     <hr class="wp-header-end">
 
-    <form method="post">
+    <?php if (! empty($status_message)) : ?>
+        <div class="notice notice-<?php echo esc_attr($status_message['type']); ?> is-dismissible">
+            <p><?php echo esc_html($status_message['message']); ?></p>
+        </div>
+    <?php endif; ?>
 
-        <?php wp_nonce_field('aboyuma_amway_product_property_edit_nonce'); ?>
+    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
 
-        <input type="hidden" name="id" value="<?php echo esc_attr($row->id); ?>">
+        <input type="hidden" name="action" value="aboyuma_product_property_edit">
+        <input type="hidden" name="property_id" value="<?php echo esc_attr($property_id); ?>">
+
+        <?php wp_nonce_field(
+            'aboyuma_amway_product_property_edit',
+            'aboyuma_amway_product_property_edit_nonce'
+        ); ?>
 
         <table class="form-table">
 
             <!-- Property Key (Readonly) -->
             <tr>
-                <th>
+                <th scope="row">
                     <label for="property_key">Property Key</label>
                 </th>
                 <td>
-                    <input type="text"
-                        name="property_key"
+                    <input
+                        type="text"
                         id="property_key"
                         class="regular-text"
-                        value="<?php echo esc_attr($row->property_key); ?>"
-                        readonly>
+                        value="<?php echo esc_attr($property->property_key); ?>"
+                        readonly />
 
                     <p class="description">
                         Property key cannot be changed after creation.
@@ -63,16 +41,17 @@ $description = isset($_POST['property_description'])
 
             <!-- Property Name -->
             <tr>
-                <th>
+                <th scope="row">
                     <label for="property_name">Property Name *</label>
                 </th>
                 <td>
-                    <input type="text"
+                    <input
+                        type="text"
                         name="property_name"
                         id="property_name"
                         class="regular-text"
-                        value="<?php echo esc_attr($name); ?>"
-                        required>
+                        value="<?php echo esc_attr($form_data['property_name']); ?>"
+                        required />
 
                     <p class="description">
                         ชื่อที่จะแสดงผลในระบบและหน้าสินค้า
@@ -82,26 +61,34 @@ $description = isset($_POST['property_description'])
 
             <!-- Property Type -->
             <tr>
-                <th>
+                <th scope="row">
                     <label for="property_type">Property Type *</label>
                 </th>
                 <td>
-                    <select name="property_type" id="property_type" required>
+                    <select
+                        name="property_type"
+                        id="property_type"
+                        required>
+
                         <option value="">-- กรุณาเลือกประเภท --</option>
 
-                        <option value="additive" <?php selected($type, 'additive'); ?>>
+                        <option value="additive"
+                            <?php selected($form_data['property_type'], 'additive'); ?>>
                             Additive (สารประกอบ)
                         </option>
 
-                        <option value="diet" <?php selected($type, 'diet'); ?>>
+                        <option value="diet"
+                            <?php selected($form_data['property_type'], 'diet'); ?>>
                             Diet (รูปแบบการรับประทาน)
                         </option>
 
-                        <option value="program" <?php selected($type, 'program'); ?>>
+                        <option value="program"
+                            <?php selected($form_data['property_type'], 'program'); ?>>
                             Program (โปรแกรม)
                         </option>
 
-                        <option value="feature" <?php selected($type, 'feature'); ?>>
+                        <option value="feature"
+                            <?php selected($form_data['property_type'], 'feature'); ?>>
                             Feature (คุณสมบัติพิเศษ)
                         </option>
 
@@ -115,13 +102,13 @@ $description = isset($_POST['property_description'])
 
             <!-- Description -->
             <tr>
-                <th>
+                <th scope="row">
                     <label for="property_description">Description</label>
                 </th>
                 <td>
                     <?php
                     wp_editor(
-                        $description,
+                        $form_data['property_description'],
                         'property_description',
                         [
                             'textarea_name' => 'property_description',
@@ -143,15 +130,14 @@ $description = isset($_POST['property_description'])
 
         </table>
 
-        <p>
-            <button type="submit"
-                name="update_property"
-                class="button button-primary">
+        <p class="submit">
+            <button type="submit" class="button button-primary">
                 Update Property
             </button>
 
             <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-property-list')); ?>"
-                class="button">
+                class="button button-secondary"
+                style="margin-left:8px;">
                 Cancel
             </a>
         </p>

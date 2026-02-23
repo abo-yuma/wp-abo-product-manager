@@ -108,5 +108,13 @@
 
     // Product property
     initDataTable("#aboyuma-product-property-table");
+
+    initDeleteHandler({
+      tableSelector: "#aboyuma-product-property-table",
+      buttonClass: ".delete-property-button",
+      ajaxObject: productPropertyDelete,
+      actionName: "aboyuma_product_property_delete",
+      confirmMessage: "Are you sure you want to delete this property?",
+    });
   });
 })(jQuery);

@@ -1,15 +1,22 @@
 <div class="wrap">
-    <h1>Add New Property</h1>
+    <h1 class="wp-heading-inline">Add New Property</h1>
+    <hr class="wp-header-end">
 
-    <form method="post">
-        <?php wp_nonce_field('aboyuma_amway_product_property_add_nonce'); ?>
+    <?php if (! empty($status_message)) : ?>
+        <div class="notice notice-<?php echo esc_attr($status_message['type']); ?> is-dismissible">
+            <p><?php echo esc_html($status_message['message']); ?></p>
+        </div>
+    <?php endif; ?>
+
+    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+        <input type="hidden" name="action" value="aboyuma_property_add">
 
         <table class="form-table">
 
             <!-- Property Key -->
             <tr>
-                <th>
-                    <label for="property_key">Property Key *</label>
+                <th scope="row">
+                    <label for="property_key">Property Key</label>
                 </th>
                 <td>
                     <input type="text"
@@ -21,15 +28,15 @@
                     <p class="description">
                         รหัสเฉพาะของคุณสมบัติ (ห้ามซ้ำ) ใช้ตัวอักษรภาษาอังกฤษพิมพ์เล็ก และเครื่องหมายขีดกลาง (-) เท่านั้น
                         ตัวอย่าง: <code>vegan</code>, <code>halal-certified</code>
-                        *ไม่สามารถแก้ไขภายหลังได้*
+                        <br><strong>*ไม่สามารถแก้ไขภายหลังได้*</strong>
                     </p>
                 </td>
             </tr>
 
             <!-- Property Name -->
             <tr>
-                <th>
-                    <label for="property_name">Property Name *</label>
+                <th scope="row">
+                    <label for="property_name">Property Name</label>
                 </th>
                 <td>
                     <input type="text"
@@ -47,8 +54,8 @@
 
             <!-- Property Type -->
             <tr>
-                <th>
-                    <label for="property_type">Property Type *</label>
+                <th scope="row">
+                    <label for="property_type">Property Type</label>
                 </th>
                 <td>
                     <select name="property_type" id="property_type" required>
@@ -67,7 +74,7 @@
 
             <!-- Description -->
             <tr>
-                <th>
+                <th scope="row">
                     <label for="property_description">Description</label>
                 </th>
                 <td>
@@ -92,17 +99,24 @@
 
         </table>
 
-        <p>
+        <?php wp_nonce_field(
+            'aboyuma_amway_product_property_add',
+            'aboyuma_amway_product_property_add_nonce'
+        ); ?>
+
+        <p class="submit">
             <button type="submit"
-                name="submit_property"
+                name="submit"
+                id="submit"
                 class="button button-primary">
-                Save Property
+                Add Property
             </button>
 
-            <a href="<?php echo admin_url('admin.php?page=aboyuma-product-property-list'); ?>"
-                class="button">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-property-list')); ?>"
+                class="button button-secondary">
                 Cancel
             </a>
         </p>
+
     </form>
 </div>
