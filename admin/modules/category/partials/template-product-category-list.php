@@ -1,10 +1,19 @@
 <div class="wrap">
     <h1 class="wp-heading-inline">Product Categories</h1>
-    <a href="<?php echo admin_url('admin.php?page=aboyuma-product-category-add'); ?>"
+    <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-category-add')); ?>"
         class="page-title-action">
         Add New
     </a>
     <hr class="wp-header-end">
+
+    <?php if (
+        ! empty($status_message['status']['type'])
+        && ! empty($status_message['status']['message'])
+    ) : ?>
+        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
+            <p><?php echo esc_html($status_message['status']['message']); ?></p>
+        </div>
+    <?php endif; ?>
 
     <table id="aboyuma-product-category-table" class="wp-list-table widefat striped">
         <thead>
@@ -29,7 +38,7 @@
                         <td><?php echo esc_html($row->created); ?></td>
                         <td><?php echo esc_html($row->modified); ?></td>
                         <td>
-                            <a href="<?php echo admin_url('admin.php?page=aboyuma-product-category-edit&id=' . $row->id); ?>">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-category-edit&id=' . $row->id)); ?>">
                                 Edit
                             </a> |
                             <a href="#" class="delete-category-button" data-id="<?php echo esc_attr($row->id); ?>">
@@ -44,6 +53,5 @@
                 </tr>
             <?php endif; ?>
         </tbody>
-
     </table>
 </div>

@@ -116,6 +116,11 @@ class Aboyuma_Product_Manager {
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-aboyuma-product-manager-admin.php';
 
 		/**
+		 * ABO YUMA Custom Flash helper
+		 */
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/helpers/class-aboyuma-flash-helper.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
@@ -154,13 +159,68 @@ class Aboyuma_Product_Manager {
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-		// ==============================
-		// ABOYUMA Custom hooks
-		// ==============================
+		// Get category admin instance from manager admin instance
+		$category_admin = $plugin_admin->get_category_admin();
+
+		/**
+		 * Category Add POST
+		 */
+		$this->loader->add_action(
+			'admin_post_aboyuma_category_add',
+			$category_admin,
+			'handle_category_add_post'
+		);
+
+		/**
+		 * Category Edit POST
+		 */
+		$this->loader->add_action(
+			'admin_post_aboyuma_category_edit',
+			$category_admin,
+			'handle_category_edit_post'
+		);
+
+		/**
+		 * Category Delete AJAX
+		 */
+		$this->loader->add_action(
+			'wp_ajax_aboyuma_product_category_delete',
+			$category_admin,
+			'category_delete_ajax_handler'
+		);
+
+		// Retrieve shared Brand Admin instance
+		$brand_admin = $plugin_admin->get_brand_admin();
+
+		/**
+		 * Brand Add POST
+		 */
+		$this->loader->add_action(
+			'admin_post_aboyuma_brand_add',
+			$brand_admin,
+			'handle_brand_add_post'
+		);
+
+		/**
+		 * Brand Edit POST
+		 */
+		$this->loader->add_action(
+			'admin_post_aboyuma_brand_edit',
+			$brand_admin,
+			'handle_brand_edit_post'
+		);
+
+		/**
+		 * Brand Delete AJAX
+		 */
+		$this->loader->add_action(
+			'wp_ajax_aboyuma_product_brand_delete',
+			$brand_admin,
+			'brand_delete_ajax_handler'
+		);
+
 		// Add admin menu action
 		$this->loader->add_action('admin_menu', $plugin_admin, 'aboyuma_product_menu');
-		// AJAX hook
-		$this->loader->add_action('wp_ajax_get_subcategories', $plugin_admin, 'get_subcategories');
 	}
 
 	/**

@@ -14,7 +14,7 @@
  */
 
 if (! defined('ABSPATH')) {
-    exit; // Prevent direct access.
+    exit; // Prevent direct access
 }
 
 class Aboyuma_Product_Category_Admin {
@@ -27,9 +27,6 @@ class Aboyuma_Product_Category_Admin {
 
         $this->wpdb  = $wpdb;
         $this->table = $wpdb->prefix . 'aboyuma_product_category';
-
-        // AJAX delete hook
-        add_action('wp_ajax_aboyuma_product_category_delete', [$this, 'category_delete_ajax_handler']);
     }
 
     /**
@@ -39,30 +36,31 @@ class Aboyuma_Product_Category_Admin {
      */
     public function category_list() {
 
-        // Success message after redirect
-        if (isset($_GET['message']) && $_GET['message'] === 'added') {
-            echo '<div class="notice notice-success is-dismissible">
-                    <p>Category added successfully!</p>
-                  </div>';
+        // Retrieve notice (shared for add/edit/delete)
+        $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
+        $status_message = get_transient($transient_key);
+
+        if ($status_message !== false) {
+            delete_transient($transient_key);
         }
 
         $categories = $this->wpdb->get_results(
             "
-            SELECT 
-                c.id,
-                c.category_name,
-                c.parent_id,
-                c.created,
-                c.modified,
-                p.category_name AS parent_name
-            FROM {$this->table} c
-            LEFT JOIN {$this->table} p ON c.parent_id = p.id
-            ORDER BY c.id DESC
-            "
+        SELECT 
+            c.id,
+            c.category_name,
+            c.parent_id,
+            c.created,
+            c.modified,
+            p.category_name AS parent_name
+        FROM {$this->table} c
+        LEFT JOIN {$this->table} p ON c.parent_id = p.id
+        ORDER BY c.id DESC
+        "
         );
 
         if (! is_array($categories)) {
-            $categories = array();
+            $categories = [];
         }
 
         require plugin_dir_path(__FILE__) . 'partials/template-product-category-list.php';
@@ -75,76 +73,82 @@ class Aboyuma_Product_Category_Admin {
      */
     public function category_add() {
 
-        $errors        = [];
-        $category_name = '';
-        $parent_id     = 0;
-
-        // Always define categories for template
         $categories = $this->get_categories_dropdown();
-
         if (! is_array($categories)) {
             $categories = [];
         }
 
-        // Handle POST
+        $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
+        $status_message = get_transient($transient_key);
+
+        if ($status_message !== false) {
+            delete_transient($transient_key);
+        }
+
+        require plugin_dir_path(__FILE__) . 'partials/template-product-category-add.php';
+    }
+
+    /**
+     * Handle Category Add POST
+     *
+     * @since 1.0.0
+     */
+    public function handle_category_add_post() {
+
         if (
-            $_SERVER['REQUEST_METHOD'] === 'POST' &&
-            isset($_POST['aboyuma_amway_product_category_add_nonce']) &&
-            wp_verify_nonce(
+            ! isset($_POST['aboyuma_amway_product_category_add_nonce']) ||
+            ! wp_verify_nonce(
                 $_POST['aboyuma_amway_product_category_add_nonce'],
                 'aboyuma_amway_product_category_add'
             )
         ) {
-
-            $category_name = isset($_POST['category_name'])
-                ? sanitize_text_field(trim($_POST['category_name']))
-                : '';
-
-            $parent_id = isset($_POST['parent_id']) && $_POST['parent_id'] !== ''
-                ? intval($_POST['parent_id'])
-                : null;
-
-            // Validation
-            if (empty($category_name)) {
-                $errors[] = 'Category name is required.';
-            }
-
-            if (empty($errors)) {
-
-                $inserted = $this->wpdb->insert(
-                    $this->table,
-                    [
-                        'category_name' => $category_name,
-                        'parent_id'     => $parent_id,
-                        'created'       => current_time('mysql'),
-                        'modified'      => current_time('mysql'),
-                    ],
-                    [
-                        '%s',
-                        '%d',
-                        '%s',
-                        '%s',
-                    ]
-                );
-
-                if ($inserted) {
-
-                    echo '<script>
-                        window.location.href = "' . esc_url(
-                        admin_url('admin.php?page=aboyuma-product-category-list&message=added')
-                    ) . '";
-                    </script>';
-                    exit;
-
-                    exit;
-                } else {
-
-                    $errors[] = 'Database error: ' . $this->wpdb->last_error;
-                }
-            }
+            wp_die('Security check failed.');
         }
 
-        require plugin_dir_path(__FILE__) . 'partials/template-product-category-add.php';
+        $category_name = sanitize_text_field($_POST['category_name'] ?? '');
+        $parent_id     = isset($_POST['parent_id']) && $_POST['parent_id'] !== ''
+            ? intval($_POST['parent_id'])
+            : null;
+
+        // Validation (Guard Clause)
+        if ($category_name === '') {
+            Aboyuma_Flash_Helper::redirect(
+                'error',
+                'Category name is required.',
+                admin_url('admin.php?page=aboyuma-product-category-add')
+            );
+        }
+
+        $inserted = $this->wpdb->insert(
+            $this->table,
+            [
+                'category_name' => $category_name,
+                'parent_id'     => $parent_id,
+                'created'       => current_time('mysql'),
+                'modified'      => current_time('mysql'),
+            ],
+            [
+                '%s',
+                $parent_id === null ? null : '%d',
+                '%s',
+                '%s',
+            ]
+        );
+
+        if ($inserted === false) {
+            Aboyuma_Flash_Helper::redirect(
+                'error',
+                'Database error: ' . $this->wpdb->last_error,
+                admin_url('admin.php?page=aboyuma-product-category-add')
+            );
+        }
+
+        // Success
+        Aboyuma_Flash_Helper::redirect(
+            'success',
+            'Category added successfully.',
+            admin_url('admin.php?page=aboyuma-product-category-list')
+        );
     }
 
     /**
@@ -154,9 +158,6 @@ class Aboyuma_Product_Category_Admin {
      */
     public function category_edit() {
 
-        $errors = [];
-
-        // Get ID safely
         $category_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
 
         if (! $category_id) {
@@ -181,74 +182,134 @@ class Aboyuma_Product_Category_Admin {
             return;
         }
 
-        // Prepare form values
-        $category_name = $category->category_name;
-        $parent_id     = $category->parent_id;
-
-        // Get categories for dropdown
+        // Get dropdown categories
         $categories = $this->get_categories_dropdown();
-
         if (! is_array($categories)) {
             $categories = [];
         }
 
-        // Handle POST
+        // Transient (status + old form data)
+        $transient_key = Aboyuma_Flash_Helper::get_flash_key();
+        $status_data   = get_transient($transient_key);
+
+        if ($status_data !== false) {
+            delete_transient($transient_key);
+        }
+
+        $status_message = $status_data['status'] ?? null;
+        $old_input      = $status_data['old_input'] ?? [];
+
+        // Prepare clean form data (NO $_POST in template)
+        $form_data = [
+            'category_name' => $old_input['category_name'] ?? $category->category_name,
+            'parent_id'     => array_key_exists('parent_id', $old_input)
+                ? $old_input['parent_id']
+                : $category->parent_id,
+        ];
+
+        require plugin_dir_path(__FILE__) . 'partials/template-product-category-edit.php';
+    }
+
+    /**
+     * Handle Category Edit POST
+     *
+     * @since 1.0.0
+     */
+    public function handle_category_edit_post() {
+
         if (
-            $_SERVER['REQUEST_METHOD'] === 'POST' &&
-            isset($_POST['aboyuma_amway_product_category_edit_nonce']) &&
-            wp_verify_nonce(
+            ! isset($_POST['aboyuma_amway_product_category_edit_nonce']) ||
+            ! wp_verify_nonce(
                 $_POST['aboyuma_amway_product_category_edit_nonce'],
                 'aboyuma_amway_product_category_edit'
             )
         ) {
-
-            $category_name = isset($_POST['category_name'])
-                ? sanitize_text_field(trim($_POST['category_name']))
-                : '';
-
-            $parent_id = isset($_POST['parent_id']) && $_POST['parent_id'] !== ''
-                ? intval($_POST['parent_id'])
-                : null;
-
-            if (empty($category_name)) {
-                $errors[] = 'Category name is required.';
-            }
-
-            // Prevent selecting itself as parent
-            if ($parent_id === $category_id) {
-                $errors[] = 'Category cannot be its own parent.';
-            }
-
-            if (empty($errors)) {
-
-                $updated = $this->wpdb->update(
-                    $this->table,
-                    [
-                        'category_name' => $category_name,
-                        'parent_id'     => $parent_id,
-                        'modified'      => current_time('mysql'),
-                    ],
-                    ['id' => $category_id],
-                    ['%s', '%d', '%s'],
-                    ['%d']
-                );
-
-                if ($updated !== false) {
-
-                    echo '<script>
-                        window.location.href = "' . esc_url(
-                        admin_url('admin.php?page=aboyuma-product-category-list&message=updated')
-                    ) . '";
-                    </script>';
-                    exit;
-                } else {
-
-                    $errors[] = 'Database error: ' . $this->wpdb->last_error;
-                }
-            }
+            wp_die('Security check failed.');
         }
 
-        require plugin_dir_path(__FILE__) . 'partials/template-product-category-edit.php';
+        $category_id = isset($_POST['category_id'])
+            ? absint($_POST['category_id'])
+            : 0;
+
+        if (! $category_id) {
+            wp_die('Invalid category ID.');
+        }
+
+        $category_name = sanitize_text_field($_POST['category_name'] ?? '');
+        $parent_id     = isset($_POST['parent_id']) && $_POST['parent_id'] !== ''
+            ? intval($_POST['parent_id'])
+            : null;
+
+        $edit_url = admin_url(
+            'admin.php?page=aboyuma-product-category-edit&id=' . $category_id
+        );
+
+        // Validation: Required Name
+        if ($category_name === '') {
+            Aboyuma_Flash_Helper::redirect(
+                'error',
+                'Category name is required.',
+                $edit_url,
+                [
+                    'old_input' => [
+                        'category_name' => $category_name,
+                        'parent_id'     => $parent_id,
+                    ],
+                ]
+            );
+        }
+
+        // Validation: Cannot Be Own Parent
+        if ($parent_id === $category_id) {
+            Aboyuma_Flash_Helper::redirect(
+                'error',
+                'Category cannot be its own parent.',
+                $edit_url,
+                [
+                    'old_input' => [
+                        'category_name' => $category_name,
+                        'parent_id'     => $parent_id,
+                    ],
+                ]
+            );
+        }
+
+        $updated = $this->wpdb->update(
+            $this->table,
+            [
+                'category_name' => $category_name,
+                'parent_id'     => $parent_id,
+                'modified'      => current_time('mysql'),
+            ],
+            ['id' => $category_id],
+            [
+                '%s',
+                $parent_id === null ? null : '%d',
+                '%s',
+            ],
+            ['%d']
+        );
+
+        if ($updated === false) {
+            Aboyuma_Flash_Helper::redirect(
+                'error',
+                'Database error: ' . $this->wpdb->last_error,
+                $edit_url,
+                [
+                    'old_input' => [
+                        'category_name' => $category_name,
+                        'parent_id'     => $parent_id,
+                    ],
+                ]
+            );
+        }
+
+        // Success
+        Aboyuma_Flash_Helper::redirect(
+            'success',
+            'Category updated successfully.',
+            admin_url('admin.php?page=aboyuma-product-category-list')
+        );
     }
 
     /**

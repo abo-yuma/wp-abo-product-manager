@@ -68,10 +68,37 @@ class Aboyuma_Product_Manager_Admin {
 		require_once plugin_dir_path(__FILE__) . 'modules/category/class-aboyuma-product-category-admin.php';
 		require_once plugin_dir_path(__FILE__) . 'modules/brand/class-aboyuma-product-brand-admin.php';
 		require_once plugin_dir_path(__FILE__) . 'modules/product-property/class-aboyuma-product-property-admin.php';
+
 		// Instantiate admin modules
 		$this->category_admin = new Aboyuma_Product_Category_Admin();
 		$this->brand_admin = new Aboyuma_Product_Brand_Admin();
 		$this->property_admin = new Aboyuma_Product_Property_Admin();
+	}
+
+	/**
+	 * Retrieve shared admin module instances.
+	 *
+	 * These getters expose the already-instantiated
+	 * admin modules so they can be reused (e.g., for
+	 * hook registration) without creating duplicates.
+	 */
+
+	/**
+	 * Get Category Admin instance.
+	 *
+	 * @return Aboyuma_Product_Category_Admin
+	 */
+	public function get_category_admin() {
+		return $this->category_admin;
+	}
+
+	/**
+	 * Get Brand Admin instance.
+	 *
+	 * @return Aboyuma_Product_Brand_Admin
+	 */
+	public function get_brand_admin() {
+		return $this->brand_admin;
 	}
 
 	/**
@@ -145,7 +172,7 @@ class Aboyuma_Product_Manager_Admin {
 		);
 
 		wp_localize_script(
-			'aboyuma-product-category-js',
+			$this->plugin_name,
 			'productCategoryDelete',
 			[
 				'ajaxurl' => admin_url('admin-ajax.php'),
@@ -154,14 +181,13 @@ class Aboyuma_Product_Manager_Admin {
 		);
 
 		wp_localize_script(
-			'aboyuma-product-brand-js',
+			$this->plugin_name,
 			'productBrandDelete',
 			[
 				'ajaxurl' => admin_url('admin-ajax.php'),
 				'nonce'   => wp_create_nonce('aboyuma_product_brand_delete'),
 			]
 		);
-	
 	}
 
 	/**
@@ -233,8 +259,8 @@ class Aboyuma_Product_Manager_Admin {
 		 * Callback MUST match first submenu
 		 */
 		add_menu_page(
-			'ABO Product Manager',
-			'ABO Product Manager',
+			'ABO YUMA Product Manager',
+			'ABO YUMA Product Manager',
 			$capability,
 			$parent_slug,
 			'aboyuma_product_list', // default page
@@ -317,7 +343,7 @@ class Aboyuma_Product_Manager_Admin {
 			'Categories',
 			$capability,
 			'aboyuma-product-category-list',
-			[$this->category_admin, 'category_list']
+			[$this->category_admin, 'category_list'] // Call Category Admin category_list method
 		);
 
 		add_submenu_page(
