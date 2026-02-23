@@ -219,6 +219,36 @@ class Aboyuma_Product_Manager {
 			'brand_delete_ajax_handler'
 		);
 
+		// Retrieve shared Property Admin instance
+		$property_admin = $plugin_admin->get_property_admin();
+
+		/**
+		 * Property Add POST
+		 */
+		$this->loader->add_action(
+			'admin_post_aboyuma_product_property_add',
+			$property_admin,
+			'handle_property_add_post'
+		);
+
+		/**
+		 * Property Edit POST
+		 */
+		$this->loader->add_action(
+			'admin_post_aboyuma_product_property_edit',
+			$property_admin,
+			'handle_property_edit_post'
+		);
+
+		/**
+		 * Property Delete AJAX
+		 */
+		$this->loader->add_action(
+			'wp_ajax_aboyuma_product_property_delete',
+			$property_admin,
+			'property_delete_ajax_handler'
+		);
+
 		// Add admin menu action
 		$this->loader->add_action('admin_menu', $plugin_admin, 'aboyuma_product_menu');
 	}

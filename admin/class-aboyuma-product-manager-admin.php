@@ -102,6 +102,15 @@ class Aboyuma_Product_Manager_Admin {
 	}
 
 	/**
+	 * Get Product Property Admin instance.
+	 *
+	 * @return Aboyuma_Product_Property_Admin
+	 */
+	public function get_property_admin() {
+		return $this->property_admin;
+	}
+
+	/**
 	 * Register the stylesheets for the admin area.
 	 *
 	 * @since    1.0.0
@@ -186,6 +195,15 @@ class Aboyuma_Product_Manager_Admin {
 			[
 				'ajaxurl' => admin_url('admin-ajax.php'),
 				'nonce'   => wp_create_nonce('aboyuma_product_brand_delete'),
+			]
+		);
+
+		wp_localize_script(
+			$this->plugin_name,
+			'productPropertyDelete',
+			[
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce'   => wp_create_nonce('aboyuma_product_property_delete'),
 			]
 		);
 	}

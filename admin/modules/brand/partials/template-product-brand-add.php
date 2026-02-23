@@ -36,7 +36,19 @@
             'aboyuma_amway_product_brand_add_nonce'
         ); ?>
 
-        <button type="submit" name="submit" id="submit" class="button button-primary">Add Brand</button>
-        <button type="button" onclick="window.history.back();" class="button button-secondary">Cancel</button>
+        <p class="submit">
+            <button type="submit"
+                name="submit"
+                id="submit"
+                class="button button-primary">
+                Add Brand
+            </button>
+
+            <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-brand-list')); ?>"
+                class="button button-secondary">
+                Cancel
+            </a>
+        </p>
+        
     </form>
 </div>
