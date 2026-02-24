@@ -2,9 +2,12 @@
     <h1 class="wp-heading-inline">Add New Brand</h1>
     <hr class="wp-header-end">
 
-    <?php if (! empty($status_message)) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['message']); ?></p>
+    <?php if (
+        is_array($status_message) &&
+        isset($status_message['status']['type'], $status_message['status']['message'])
+    ) : ?>
+        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
+            <p><?php echo esc_html($status_message['status']['message']); ?></p>
         </div>
     <?php endif; ?>
 
@@ -32,8 +35,8 @@
         </table>
 
         <?php wp_nonce_field(
-            'aboyuma_amway_product_brand_add',
-            'aboyuma_amway_product_brand_add_nonce'
+            'aboyuma_product_brand_add',
+            'aboyuma_product_brand_add_nonce'
         ); ?>
 
         <p class="submit">
@@ -49,6 +52,6 @@
                 Cancel
             </a>
         </p>
-        
+
     </form>
 </div>

@@ -10,12 +10,12 @@
 
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
 
-        <input type="hidden" name="action" value="aboyuma_product_property_edit">
+        <input type="hidden" name="action" value="aboyuma_property_edit">
         <input type="hidden" name="property_id" value="<?php echo esc_attr($property_id); ?>">
 
         <?php wp_nonce_field(
-            'aboyuma_amway_product_property_edit',
-            'aboyuma_amway_product_property_edit_nonce'
+            'aboyuma_product_property_edit',
+            'aboyuma_product_property_edit_nonce'
         ); ?>
 
         <table class="form-table">

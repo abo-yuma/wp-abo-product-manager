@@ -159,98 +159,93 @@ class Aboyuma_Product_Manager {
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-		// Get category admin instance from manager admin instance
-		$category_admin = $plugin_admin->get_category_admin();
+		/**
+		 * Register Admin Menu (Page Rendering)
+		 *
+		 * Hooks into admin_menu to register plugin admin pages.
+		 * Responsible only for page registration and rendering callbacks.
+		 */
+		$this->loader->add_action('admin_menu', $plugin_admin, 'aboyuma_product_menu');
 
 		/**
-		 * Category Add POST
+		 * Admin Module – POST & AJAX Processing Hooks
+		 *
+		 * Registers form submission and AJAX handlers
+		 * for admin CRUD operations across modules.
+		 *
+		 * - admin_post_*  → Handles Add/Edit form POST requests
+		 * - wp_ajax_*     → Handles Delete via AJAX
+		 *
+		 * Note:
+		 * Page rendering is handled separately via admin_menu callbacks.
 		 */
+
+		// Category
+		$category_admin = $plugin_admin->get_category_admin();
 		$this->loader->add_action(
 			'admin_post_aboyuma_category_add',
 			$category_admin,
 			'handle_category_add_post'
 		);
-
-		/**
-		 * Category Edit POST
-		 */
 		$this->loader->add_action(
 			'admin_post_aboyuma_category_edit',
 			$category_admin,
 			'handle_category_edit_post'
 		);
-
-		/**
-		 * Category Delete AJAX
-		 */
 		$this->loader->add_action(
 			'wp_ajax_aboyuma_product_category_delete',
 			$category_admin,
 			'category_delete_ajax_handler'
 		);
 
-		// Retrieve shared Brand Admin instance
+		// Brand
 		$brand_admin = $plugin_admin->get_brand_admin();
-
-		/**
-		 * Brand Add POST
-		 */
 		$this->loader->add_action(
 			'admin_post_aboyuma_brand_add',
 			$brand_admin,
 			'handle_brand_add_post'
 		);
-
-		/**
-		 * Brand Edit POST
-		 */
 		$this->loader->add_action(
 			'admin_post_aboyuma_brand_edit',
 			$brand_admin,
 			'handle_brand_edit_post'
 		);
-
-		/**
-		 * Brand Delete AJAX
-		 */
 		$this->loader->add_action(
 			'wp_ajax_aboyuma_product_brand_delete',
 			$brand_admin,
 			'brand_delete_ajax_handler'
 		);
 
-		// Retrieve shared Property Admin instance
+		// Property
 		$property_admin = $plugin_admin->get_property_admin();
-
-		/**
-		 * Property Add POST
-		 */
 		$this->loader->add_action(
-			'admin_post_aboyuma_product_property_add',
+			'admin_post_aboyuma_property_add',
 			$property_admin,
 			'handle_property_add_post'
 		);
-
-		/**
-		 * Property Edit POST
-		 */
 		$this->loader->add_action(
-			'admin_post_aboyuma_product_property_edit',
+			'admin_post_aboyuma_property_edit',
 			$property_admin,
 			'handle_property_edit_post'
 		);
-
-		/**
-		 * Property Delete AJAX
-		 */
 		$this->loader->add_action(
-			'wp_ajax_aboyuma_product_property_delete',
+			'wp_ajax_aboyuma_property_delete',
 			$property_admin,
 			'property_delete_ajax_handler'
 		);
 
-		// Add admin menu action
-		$this->loader->add_action('admin_menu', $plugin_admin, 'aboyuma_product_menu');
+		// Product
+		$product_admin = $plugin_admin->get_product_admin();
+		$this->loader->add_action(
+			'admin_post_aboyuma_product_add',
+			$product_admin,
+			'handle_product_add_post'
+		);
+		$this->loader->add_action(
+			'wp_ajax_get_subcategories',
+			$product_admin,
+			'get_subcategories'
+		);
 	}
 
 	/**

@@ -65,8 +65,8 @@
         </table>
 
         <?php wp_nonce_field(
-            'aboyuma_amway_product_category_edit',
-            'aboyuma_amway_product_category_edit_nonce'
+            'aboyuma_product_category_edit',
+            'aboyuma_product_category_edit_nonce'
         ); ?>
 
         <p class="submit">
