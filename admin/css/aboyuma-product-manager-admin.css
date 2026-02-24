@@ -6,3 +6,58 @@
   width: 150px;
   height: auto;
 }
+
+/* =============================
+   MAIN IMAGE
+============================= */
+.amway-main-image {
+  margin-top: 15px;
+}
+
+.amway-main-image img {
+  max-width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* =============================
+   GALLERY
+============================= */
+
+#gallery-container {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gallery-item {
+  position: relative;
+  width: 120px;
+  cursor: move;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #d63638;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  line-height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}

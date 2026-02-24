@@ -90,10 +90,10 @@ class Aboyuma_Product_Property_Admin {
     public function handle_property_add_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_property_add_nonce']) ||
+            ! isset($_POST['aboyuma_product_property_add_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_property_add_nonce'],
-                'aboyuma_amway_product_property_add'
+                $_POST['aboyuma_product_property_add_nonce'],
+                'aboyuma_product_property_add'
             )
         ) {
             wp_die('Security check failed.');
@@ -244,10 +244,10 @@ class Aboyuma_Product_Property_Admin {
     public function handle_property_edit_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_property_edit_nonce']) ||
+            ! isset($_POST['aboyuma_product_property_edit_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_property_edit_nonce'],
-                'aboyuma_amway_product_property_edit'
+                $_POST['aboyuma_product_property_edit_nonce'],
+                'aboyuma_product_property_edit'
             )
         ) {
             wp_die('Security check failed.');
@@ -348,7 +348,7 @@ class Aboyuma_Product_Property_Admin {
      */
     public function property_delete_ajax_handler() {
 
-        check_ajax_referer('aboyuma_product_property_delete', 'nonce');
+        check_ajax_referer('aboyuma_property_delete', 'nonce');
 
         $property_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
 

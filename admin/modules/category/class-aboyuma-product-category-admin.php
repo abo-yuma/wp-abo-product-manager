@@ -46,17 +46,17 @@ class Aboyuma_Product_Category_Admin {
 
         $categories = $this->wpdb->get_results(
             "
-        SELECT 
-            c.id,
-            c.category_name,
-            c.parent_id,
-            c.created,
-            c.modified,
-            p.category_name AS parent_name
-        FROM {$this->table} c
-        LEFT JOIN {$this->table} p ON c.parent_id = p.id
-        ORDER BY c.id DESC
-        "
+                SELECT 
+                    c.id,
+                    c.category_name,
+                    c.parent_id,
+                    c.created,
+                    c.modified,
+                    p.category_name AS parent_name
+                FROM {$this->table} c
+                LEFT JOIN {$this->table} p ON c.parent_id = p.id
+                ORDER BY c.id DESC
+                "
         );
 
         if (! is_array($categories)) {
@@ -96,10 +96,10 @@ class Aboyuma_Product_Category_Admin {
     public function handle_category_add_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_category_add_nonce']) ||
+            ! isset($_POST['aboyuma_product_category_add_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_category_add_nonce'],
-                'aboyuma_amway_product_category_add'
+                $_POST['aboyuma_product_category_add_nonce'],
+                'aboyuma_product_category_add'
             )
         ) {
             wp_die('Security check failed.');
@@ -110,7 +110,7 @@ class Aboyuma_Product_Category_Admin {
             ? intval($_POST['parent_id'])
             : null;
 
-        // Validation (Guard Clause)
+        // Validation
         if ($category_name === '') {
             Aboyuma_Flash_Helper::redirect(
                 'error',
@@ -118,6 +118,52 @@ class Aboyuma_Product_Category_Admin {
                 admin_url('admin.php?page=aboyuma-product-category-add')
             );
         }
+
+        /**
+         * Limit to 2 Levels Only
+         *
+         * When select parent:
+         *  - top-level only
+         *  - If parent has parent → not create
+         */
+        if ($parent_id !== null) {
+
+            $parent = $this->wpdb->get_row(
+                $this->wpdb->prepare(
+                    "SELECT parent_id FROM {$this->table} WHERE id = %d",
+                    $parent_id
+                )
+            );
+
+            // ถ้า parent ไม่มีอยู่จริง
+            if (! $parent) {
+                Aboyuma_Flash_Helper::redirect(
+                    'error',
+                    'Invalid parent category.',
+                    admin_url('admin.php?page=aboyuma-product-category-add')
+                );
+            }
+
+            /**
+             * If the selected parent already has its own parent,
+             * it means the selected parent is a Level 2 category.
+             *
+             * Allowing this would create a Level 3 category,
+             * which is not allowed because we restrict the hierarchy
+             * to a maximum of 2 levels. 
+             */
+            if ($parent->parent_id !== null) {
+                Aboyuma_Flash_Helper::redirect(
+                    'error',
+                    'You can only create 2 levels of categories.',
+                    admin_url('admin.php?page=aboyuma-product-category-add')
+                );
+            }
+        }
+
+        // =========================
+        // Insert
+        // =========================
 
         $inserted = $this->wpdb->insert(
             $this->table,
@@ -143,7 +189,6 @@ class Aboyuma_Product_Category_Admin {
             );
         }
 
-        // Success
         Aboyuma_Flash_Helper::redirect(
             'success',
             'Category added successfully.',
@@ -218,10 +263,10 @@ class Aboyuma_Product_Category_Admin {
     public function handle_category_edit_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_category_edit_nonce']) ||
+            ! isset($_POST['aboyuma_product_category_edit_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_category_edit_nonce'],
-                'aboyuma_amway_product_category_edit'
+                $_POST['aboyuma_product_category_edit_nonce'],
+                'aboyuma_product_category_edit'
             )
         ) {
             wp_die('Security check failed.');
@@ -290,6 +335,43 @@ class Aboyuma_Product_Category_Admin {
             ['%d']
         );
 
+        /**
+         * Limit to 2 Levels Only (Edit)
+         */
+        if ($parent_id !== null) {
+
+            $parent = $this->wpdb->get_row(
+                $this->wpdb->prepare(
+                    "SELECT parent_id FROM {$this->table} WHERE id = %d",
+                    $parent_id
+                )
+            );
+
+            if (! $parent) {
+                Aboyuma_Flash_Helper::redirect(
+                    'error',
+                    'Invalid parent category.',
+                    $edit_url
+                );
+            }
+
+            /**
+             * If the selected parent already has its own parent,
+             * it means the selected parent is a Level 2 category.
+             *
+             * Allowing this would create a Level 3 category,
+             * which is not allowed because we restrict the hierarchy
+             * to a maximum of 2 levels. 
+             */
+            if ($parent->parent_id !== null) {
+                Aboyuma_Flash_Helper::redirect(
+                    'error',
+                    'You can only create 2 levels of categories.',
+                    $edit_url
+                );
+            }
+        }
+
         if ($updated === false) {
             Aboyuma_Flash_Helper::redirect(
                 'error',
@@ -344,22 +426,22 @@ class Aboyuma_Product_Category_Admin {
 
     /**
      * Get all categories for dropdown (id + name)
-     *
+     * Get Top-Level Categories for Dropdown
+     * 
      * @return array
      *
      * @since 1.0.0
      */
     private function get_categories_dropdown() {
 
-        $categories = $this->wpdb->get_results(
-            "SELECT id, category_name FROM {$this->table} ORDER BY category_name ASC",
-            ARRAY_A
+        $results = $this->wpdb->get_results(
+            "SELECT id, category_name
+            FROM {$this->table}
+            WHERE parent_id IS NULL
+            ORDER BY category_name ASC",
+                ARRAY_A
         );
 
-        if (! is_array($categories)) {
-            return array();
-        }
-
-        return $categories;
+        return is_array($results) ? $results : [];
     }
 }

@@ -114,6 +114,15 @@ class Aboyuma_Product_Manager_Admin {
 	}
 
 	/**
+	 * Get Product Admin instance.
+	 *
+	 * @return Aboyuma_Product_Admin
+	 */
+	public function get_product_admin() {
+		return $this->product_admin;
+	}
+
+	/**
 	 * Register the stylesheets for the admin area.
 	 *
 	 * @since    1.0.0
@@ -364,7 +373,7 @@ class Aboyuma_Product_Manager_Admin {
 			'Categories',
 			$capability,
 			'aboyuma-product-category-list',
-			[$this->category_admin, 'category_list'] // Call Category Admin category_list method
+			[$this->category_admin, 'category_list']
 		);
 
 		add_submenu_page(

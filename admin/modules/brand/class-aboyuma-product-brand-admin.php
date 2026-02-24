@@ -88,10 +88,10 @@ class Aboyuma_Product_Brand_Admin {
     public function handle_brand_add_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_brand_add_nonce']) ||
+            ! isset($_POST['aboyuma_product_brand_add_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_brand_add_nonce'],
-                'aboyuma_amway_product_brand_add'
+                $_POST['aboyuma_product_brand_add_nonce'],
+                'aboyuma_product_brand_add'
             )
         ) {
             wp_die('Security check failed.');
@@ -208,10 +208,10 @@ class Aboyuma_Product_Brand_Admin {
     public function handle_brand_edit_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_brand_edit_nonce']) ||
+            ! isset($_POST['aboyuma_product_brand_edit_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_brand_edit_nonce'],
-                'aboyuma_amway_product_brand_edit'
+                $_POST['aboyuma_product_brand_edit_nonce'],
+                'aboyuma_product_brand_edit'
             )
         ) {
             wp_die('Security check failed.');

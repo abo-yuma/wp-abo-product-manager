@@ -2,9 +2,12 @@
     <h1 class="wp-heading-inline">Add New Product</h1>
     <hr class="wp-header-end">
 
-    <?php if (! empty($status_message)) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['message']); ?></p>
+    <?php if (
+        is_array($status_message) &&
+        isset($status_message['status']['type'], $status_message['status']['message'])
+    ) : ?>
+        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
+            <p><?php echo esc_html($status_message['status']['message']); ?></p>
         </div>
     <?php endif; ?>
 
@@ -15,12 +18,15 @@
 
             <!-- MAIN IMAGE -->
             <tr>
-                <th>Main Image</th>
+                <th>
+                    <label for="main_image_id">Main Image</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
                     <input type="hidden" name="main_image_id" id="main_image_id" value="">
                     <button type="button" class="button" id="select-main-image">Select / Replace Image</button>
 
-                    <div id="main-image-wrapper" class="amway-main-image" style="display:none;">
+                    <div id="main-image-wrapper" class="main-image" style="display:none;">
                         <img id="main-image-preview" src="">
                     </div>
 
@@ -32,25 +38,31 @@
 
             <!-- GALLERY -->
             <tr>
-                <th>Product Gallery</th>
+                <th>
+                    <label for="gallery_image_id">Gallery Image</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
                     <button type="button" class="button" id="add-gallery-images">
                         Add Gallery Images
                     </button>
 
-                    <div id="gallery-container" class="amway-gallery"></div>
+                    <div id="gallery-container" class="gallery"></div>
                     <p class="description">
-                        เพิ่มรูปภาพเพิ่มเติมของสินค้า **ต้องเพิ่ม สามารถลากเพื่อจัดเรียงลำดับ และกด × เพื่อลบรูปออก
+                        เพิ่มรูปภาพเพิ่มเติมของสินค้า สามารถลากเพื่อจัดเรียงลำดับ และกด × เพื่อลบรูปออก
                     </p>
                 </td>
             </tr>
 
             <!-- PRODUCT CODE -->
             <tr>
-                <th><label for="product_code">Product Code</label></th>
+                <th>
+                    <label for="product_code">Product Code</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
                     <input type="text" name="product_code" id="product_code" class="regular-text"
-                        value="<?php echo esc_attr($_POST['product_code'] ?? ''); ?>">
+                        value="<?php echo esc_attr($_POST['product_code'] ?? ''); ?>" required>
                     <p class="description">
                         กรอกรหัสสินค้าสำหรับใช้อ้างอิงภายในระบบ เช่น SKU หรือรหัสสต็อก
                     </p>
@@ -59,10 +71,13 @@
 
             <!-- NAME -->
             <tr>
-                <th><label for="product_name">Product Name</label></th>
+                <th>
+                    <label for="product_name">Product Name</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
                     <input type="text" name="product_name" id="product_name" class="regular-text"
-                        value="<?php echo esc_attr($_POST['product_name'] ?? ''); ?>">
+                        value="<?php echo esc_attr($_POST['product_name'] ?? ''); ?>" required>
                     <p class="description">
                         กรอกชื่อสินค้า แนะนำให้ใช้ชื่อทางการเป็นภาษาอังกฤษ เช่น Nutrilite Double X
                     </p>
@@ -71,9 +86,12 @@
 
             <!-- BRAND -->
             <tr>
-                <th><label for="product_brand">Product Brand</label></th>
+                <th>
+                    <label for="product_brand">Product Brand</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
-                    <select name="product_brand" id="product_brand" class="regular-text">
+                    <select name="product_brand" id="product_brand" class="regular-text" required>
                         <option value="">-- Select Brand --</option>
                         <?php foreach ($brands as $brand) : ?>
                             <option value="<?php echo esc_attr($brand->id); ?>"
@@ -90,9 +108,12 @@
 
             <!-- CATEGORY -->
             <tr>
-                <th><label for="parent_category">Parent Category</label></th>
+                <th>
+                    <label for="parent_category">Parent Category</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
-                    <select name="parent_category" id="parent_category" class="regular-text">
+                    <select name="parent_category" id="parent_category" class="regular-text" required>
                         <option value="">-- Select Parent Category --</option>
                         <?php foreach ($categories as $category) :
                             if ($category->parent_id == 0): ?>
@@ -109,9 +130,12 @@
             </tr>
 
             <tr>
-                <th><label for="product_subcategory">Subcategory</label></th>
+                <th>
+                    <label for="product_subcategory">Subcategory</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
-                    <select name="product_subcategory" id="product_subcategory" class="regular-text">
+                    <select name="product_subcategory" id="product_subcategory" class="regular-text" required>
                         <option value="">-- Select Subcategory --</option>
                     </select>
                     <p class="description">
@@ -122,10 +146,13 @@
 
             <!-- UNIT COUNT -->
             <tr>
-                <th><label for="product_unit_count">Unit Count</label></th>
+                <th>
+                    <label for="product_unit_count">Unit Count</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
                     <input type="number" name="product_unit_count" id="product_unit_count"
-                        value="<?php echo esc_attr($_POST['product_unit_count'] ?? ''); ?>">
+                        value="<?php echo esc_attr($_POST['product_unit_count'] ?? ''); ?>" required>
                     <p class="description">
                         ระบุจำนวนหน่วยของสินค้า เช่น 30, 60, 100 เป็นต้น
                     </p>
@@ -134,9 +161,12 @@
 
             <!-- UNIT TYPE -->
             <tr>
-                <th><label for="product_unit_type">Unit Type</label></th>
+                <th>
+                    <label for="product_unit_type">Unit Type</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
-                    <select name="product_unit_type">
+                    <select name="product_unit_type" required>
                         <?php foreach (['tablet', 'capsule', 'sachet', 'g', 'ml'] as $type): ?>
                             <option value="<?php echo esc_attr($type); ?>"
                                 <?php selected($_POST['product_unit_type'] ?? '', $type); ?>>
@@ -152,9 +182,12 @@
 
             <!-- UNIT USAGE -->
             <tr>
-                <th><label for="product_unit_usage">Unit Usage</label></th>
+                <th>
+                    <label for="product_unit_usage">Unit Usage</label>
+                    <span style="color: #d63638;"> *Required</span>
+                </th>
                 <td>
-                    <select name="product_unit_usage">
+                    <select name="product_unit_usage" required>
                         <option value="content" <?php selected($_POST['product_unit_usage'] ?? '', 'content'); ?>>
                             บรรจุ / ปริมาณสินค้า
                         </option>
@@ -174,36 +207,43 @@
                 'product_short_description' => [
                     'rows' => 5,
                     'media' => false,
+                    'required' => true,
                     'description' => 'คำอธิบายสั้น ๆ ของสินค้า ใช้แสดงในหน้ารายการสินค้า'
                 ],
                 'product_description' => [
                     'rows' => 5,
                     'media' => false,
+                    'required' => true,
                     'description' => 'รายละเอียดภาพรวมของสินค้า แสดงในหน้ารายละเอียดสินค้า'
                 ],
                 'product_benefit' => [
                     'rows' => 5,
                     'media' => false,
+                    'required' => true,
                     'description' => 'ระบุคุณประโยชน์หรือจุดเด่นของสินค้า'
                 ],
                 'product_detail' => [
                     'rows' => 20,
                     'media' => true,
+                    'required' => true,
                     'description' => 'ข้อมูลรายละเอียดเชิงลึกของสินค้า เช่น วิธีใช้ หรือข้อมูลเพิ่มเติม'
                 ],
                 'product_specification' => [
                     'rows' => 20,
                     'media' => true,
+                    'required' => true,
                     'description' => 'ข้อมูลสเปกสินค้า เช่น ขนาด น้ำหนัก ส่วนประกอบ'
                 ],
                 'product_comment' => [
                     'rows' => 10,
                     'media' => true,
+                    'required' => false,
                     'description' => 'ข้อมูลเพิ่มเติมหรือหมายเหตุเกี่ยวกับสินค้า'
                 ],
                 'product_review' => [
                     'rows' => 20,
                     'media' => true,
+                    'required' => false,
                     'description' => 'ข้อมูลรีวิวหรือคำแนะนำเกี่ยวกับสินค้า'
                 ],
             ];
@@ -215,6 +255,10 @@
                     <th>
                         <label for="<?php echo esc_attr($field); ?>">
                             <?php echo esc_html(ucwords(str_replace('_', ' ', $field))); ?>
+
+                            <?php if (!empty($config['required'])) : ?>
+                                <span style="color: #d63638;"> *Required</span>
+                            <?php endif; ?>
                         </label>
                     </th>
                     <td>
@@ -255,7 +299,7 @@
                         </p>
 
                         <?php foreach ($items as $property): ?>
-                            <label style="display:block;margin-left:15px;">
+                            <label style="margin-left: 15px;">
                                 <input type="checkbox"
                                     name="product_properties[]"
                                     value="<?php echo esc_attr($property->property_key); ?>"
@@ -292,23 +336,33 @@
             $link_fields = [
                 'product_shop_link' => [
                     'label' => 'Product Shop Link',
+                    'required' => true,
                     'description' => 'ลิงก์ไปยังหน้าซื้อสินค้าหรือร้านค้าออนไลน์'
                 ],
                 'product_sop_link' => [
                     'label' => 'Product SOP Link',
+                    'required' => false,
                     'description' => 'ลิงก์ไปยังเอกสาร SOP หรือเอกสารข้อมูลสินค้า'
                 ],
                 'product_sale_article_link' => [
                     'label' => 'Product Sale Article Link',
+                    'required' => false,
                     'description' => 'ลิงก์ไปยังบทความแนะนำหรือบทความส่งเสริมการขายสินค้า'
                 ],
-            ]; ?>
+            ];
+            ?>
 
             <?php foreach ($link_fields as $name => $config): ?>
                 <tr>
                     <th>
                         <label for="<?php echo esc_attr($name); ?>">
                             <?php echo esc_html($config['label']); ?>
+
+                            <?php if (!empty($config['required'])) : ?>
+                                <span style="color:#d63638; font-weight:500; margin-left:6px;">
+                                    *Required
+                                </span>
+                            <?php endif; ?>
                         </label>
                     </th>
                     <td>
@@ -316,7 +370,8 @@
                             id="<?php echo esc_attr($name); ?>"
                             name="<?php echo esc_attr($name); ?>"
                             class="regular-text"
-                            value="<?php echo esc_url($_POST[$name] ?? ''); ?>">
+                            value="<?php echo esc_url($_POST[$name] ?? ''); ?>"
+                            <?php echo !empty($config['required']) ? 'required' : ''; ?>>
 
                         <p class="description">
                             <?php echo esc_html($config['description']); ?>
@@ -344,11 +399,16 @@
 
             <!-- SLUG -->
             <tr>
-                <th><label for="product_slug">Product Slug</label></th>
+                <th>
+                    <label for="product_slug">Product Slug</label>
+                    <span style="color:#d63638; font-weight:500; margin-left:6px;">
+                        *Required
+                    </span>
+                </th>
                 <td>
                     <input type="text" name="product_slug" id="product_slug"
                         class="regular-text"
-                        value="<?php echo esc_attr($_POST['product_slug'] ?? ''); ?>">
+                        value="<?php echo esc_attr($_POST['product_slug'] ?? ''); ?>" required>
                     <p class="description">
                         กำหนด URL ของสินค้า (ตัวอักษรภาษาอังกฤษ ตัวเลข และขีดกลางเท่านั้น) หากไม่กรอก ระบบอาจสร้างให้อัตโนมัติ
                     </p>
@@ -357,10 +417,15 @@
 
         </table>
 
-        <?php wp_nonce_field('aboyuma_amway_product_add', 'aboyuma_amway_product_add_nonce'); ?>
+        <?php wp_nonce_field(
+            'aboyuma_product_add',
+            'aboyuma_product_add_nonce'
+        ); ?>
 
         <p class="submit">
+
             <button type="submit" class="button button-primary">Add Product</button>
+
             <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-list')); ?>"
                 class="button button-secondary">Cancel</a>
         </p>

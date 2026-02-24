@@ -14,8 +14,8 @@
         <input type="hidden" name="brand_id" value="<?php echo esc_attr($brand_id); ?>">
 
         <?php wp_nonce_field(
-            'aboyuma_amway_product_brand_edit',
-            'aboyuma_amway_product_brand_edit_nonce'
+            'aboyuma_product_brand_edit',
+            'aboyuma_product_brand_edit_nonce'
         ); ?>
 
         <table class="form-table">
@@ -53,7 +53,7 @@
 
         <p class="submit">
             <button type="submit" class="button button-primary">
-                Update Category
+                Update Brand
             </button>
 
             <a href="<?php echo esc_url(admin_url('admin.php?page=aboyuma-product-brand-list')); ?>"

@@ -74,8 +74,6 @@ class Aboyuma_Product_Admin {
      */
     public function product_add() {
 
-        global $wpdb;
-
         // Flash message
         $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
         $status_message = get_transient($transient_key);
@@ -85,9 +83,9 @@ class Aboyuma_Product_Admin {
         }
 
         // Fetch brands
-        $brand_table = $wpdb->prefix . 'aboyuma_product_brand';
+        $brand_table = $this->wpdb->prefix . 'aboyuma_product_brand';
 
-        $brands = $wpdb->get_results(
+        $brands = $this->wpdb->get_results(
             "SELECT id, brand_name 
          FROM {$brand_table}
          ORDER BY brand_name ASC"
@@ -96,9 +94,9 @@ class Aboyuma_Product_Admin {
         $brands = is_array($brands) ? $brands : [];
 
         // Fetch categories
-        $category_table = $wpdb->prefix . 'aboyuma_product_category';
+        $category_table = $this->wpdb->prefix . 'aboyuma_product_category';
 
-        $categories = $wpdb->get_results(
+        $categories = $this->wpdb->get_results(
             "SELECT id, category_name, parent_id 
          FROM {$category_table}
          ORDER BY parent_id ASC, category_name ASC"
@@ -107,9 +105,9 @@ class Aboyuma_Product_Admin {
         $categories = is_array($categories) ? $categories : [];
 
         // Fetch properties
-        $property_table = $wpdb->prefix . 'aboyuma_product_property';
+        $property_table = $this->wpdb->prefix . 'aboyuma_product_property';
 
-        $properties = $wpdb->get_results(
+        $properties = $this->wpdb->get_results(
             "SELECT id, property_key, property_name, property_type
          FROM {$property_table}
          ORDER BY property_type ASC, property_name ASC"
@@ -128,10 +126,10 @@ class Aboyuma_Product_Admin {
     public function handle_product_add_post() {
 
         if (
-            ! isset($_POST['aboyuma_amway_product_add_nonce']) ||
+            ! isset($_POST['aboyuma_product_add_nonce']) ||
             ! wp_verify_nonce(
-                $_POST['aboyuma_amway_product_add_nonce'],
-                'aboyuma_amway_product_add'
+                $_POST['aboyuma_product_add_nonce'],
+                'aboyuma_product_add'
             )
         ) {
             wp_die('Security check failed.');
@@ -139,7 +137,7 @@ class Aboyuma_Product_Admin {
 
         global $wpdb;
 
-        $table = $wpdb->prefix . 'aboyuma_amway_product';
+        $table = $wpdb->prefix . 'aboyuma_product';
 
         $data   = $this->sanitize_product($_POST);
         $errors = $this->validate_product($data, $table);
@@ -257,8 +255,8 @@ class Aboyuma_Product_Admin {
         // Insert product properties
         if (! empty($post['product_properties'])) {
 
-            $pivot_table = $wpdb->prefix . 'aboyuma_amway_product_property_pivot';
-            $def_table   = $wpdb->prefix . 'aboyuma_amway_product_property';
+            $pivot_table = $wpdb->prefix . 'aboyuma_product_property_pivot';
+            $def_table   = $wpdb->prefix . 'aboyuma_product_property';
 
             foreach ($post['product_properties'] as $key) {
 
@@ -291,7 +289,7 @@ class Aboyuma_Product_Admin {
         // Insert gallery images
         if (! empty($post['gallery_image_ids'])) {
 
-            $gallery_table = $wpdb->prefix . 'aboyuma_amway_product_image';
+            $gallery_table = $wpdb->prefix . 'aboyuma_product_image';
 
             foreach ($post['gallery_image_ids'] as $index => $attachment_id) {
 
@@ -315,7 +313,7 @@ class Aboyuma_Product_Admin {
         // Insert product tags
         if (! empty($post['product_tags'])) {
 
-            $tag_table = $wpdb->prefix . 'aboyuma_amway_product_tag';
+            $tag_table = $wpdb->prefix . 'aboyuma_product_tag';
 
             $tags = array_filter(
                 array_map(
@@ -345,7 +343,7 @@ class Aboyuma_Product_Admin {
         // Insert related videos
         if (! empty($post['video_datas'])) {
 
-            $video_table = $wpdb->prefix . 'aboyuma_amway_product_video';
+            $video_table = $wpdb->prefix . 'aboyuma_product_video';
 
             foreach ($post['video_datas'] as $video) {
 
@@ -465,33 +463,21 @@ class Aboyuma_Product_Admin {
             $errors[] = 'Member price cannot exceed normal price.';
         }
 
-        // Unique check
-        if ($is_edit) {
-            $exists = $wpdb->get_var(
-                $wpdb->prepare(
-                    "SELECT COUNT(*) FROM $table_name
-                 WHERE (product_slug = %s OR product_code = %s)
-                 AND id != %d",
-                    $product_slug,
-                    $product_code,
-                    $current_id
-                )
-            );
-        } else {
-            $exists = $wpdb->get_var(
-                $wpdb->prepare(
-                    "SELECT COUNT(*) FROM $table_name
-                 WHERE product_slug = %s OR product_code = %s",
-                    $product_slug,
-                    $product_code
-                )
-            );
-        }
-
         if ($exists > 0) {
             $errors[] = 'Slug or product code already exists.';
         }
 
+        // Force test error
+        $errors[] = 'Test validation error.';
+
         return $errors;
+    }
+
+    public function get_subcategories() {
+        $parent_id = isset($_GET['parent_id']) ? intval($_GET['parent_id']) : 0;
+        $results = $this->wpdb->get_results(
+            $this->wpdb->prepare("SELECT id, category_name FROM {$this->wpdb->prefix}aboyuma_product_category WHERE parent_id = %d", $parent_id)
+        );
+        wp_send_json($results);
     }
 }
