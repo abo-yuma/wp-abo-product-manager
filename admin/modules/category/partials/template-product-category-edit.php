@@ -2,9 +2,14 @@
     <h1 class="wp-heading-inline">Edit Product Category</h1>
     <hr class="wp-header-end">
 
-    <?php if (! empty($status_message)) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['message']); ?></p>
+    <?php
+    $status  = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    $message = isset($_GET['message']) ? sanitize_text_field($_GET['message']) : '';
+
+    if ($status && $message) :
+    ?>
+        <div class="notice notice-<?php echo esc_attr($status); ?> is-dismissible">
+            <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
 
@@ -26,7 +31,7 @@
                         name="category_name"
                         id="category_name"
                         class="regular-text"
-                        value="<?php echo esc_attr($form_data['category_name']); ?>"
+                        value="<?php echo esc_attr($category->category_name); ?>"
                         required>
                     <p class="description">
                         ชื่อหมวดหมู่สินค้า
@@ -49,7 +54,7 @@
 
                             <option
                                 value="<?php echo esc_attr($cat['id']); ?>"
-                                <?php selected($form_data['parent_id'], $cat['id']); ?>>
+                                <?php selected($category->parent_id, $cat['id']); ?>>
                                 <?php echo esc_html($cat['category_name']); ?>
                             </option>
 

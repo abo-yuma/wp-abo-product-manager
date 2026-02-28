@@ -36,14 +36,6 @@ class Aboyuma_Product_Property_Admin {
      */
     public function property_list() {
 
-        // Retrieve notice (shared for add/edit/delete)
-        $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
-        $status_message = get_transient($transient_key);
-
-        if ($status_message !== false) {
-            delete_transient($transient_key);
-        }
-
         $rows = $this->wpdb->get_results(
             "
         SELECT 
@@ -72,13 +64,6 @@ class Aboyuma_Product_Property_Admin {
      */
     public function property_add() {
 
-        $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
-        $status_message = get_transient($transient_key);
-
-        if ($status_message !== false) {
-            delete_transient($transient_key);
-        }
-
         require plugin_dir_path(__FILE__) . 'partials/template-product-property-add.php';
     }
 
@@ -99,42 +84,50 @@ class Aboyuma_Product_Property_Admin {
             wp_die('Security check failed.');
         }
 
-        $property_key         = sanitize_key($_POST['property_key'] ?? '');
-        $property_name        = sanitize_text_field($_POST['property_name'] ?? '');
-        $property_type        = sanitize_text_field($_POST['property_type'] ?? '');
-        $property_description = wp_kses_post($_POST['property_description'] ?? '');
+        $property_key         = sanitize_key($_POST['property_key']);
+        $property_name        = sanitize_text_field($_POST['property_name']);
+        $property_type        = sanitize_text_field($_POST['property_type']);
+        $property_description = wp_kses_post($_POST['property_description']);
 
         // Validation (Guard Clause)
         if ($property_key === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Property key is required.',
-                admin_url('admin.php?page=aboyuma-product-property-add')
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-add&status=error&message=' .
+                        urlencode('Property key is required.')
+                )
             );
+            exit;
         }
 
         if (! preg_match('/^[a-z0-9\-]+$/', $property_key)) {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Property key must contain only lowercase letters, numbers and hyphen (-).',
-                admin_url('admin.php?page=aboyuma-product-property-add')
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-add&status=error&message=' .
+                        urlencode('Property key must contain only lowercase letters, numbers and hyphen (-).')
+                )
             );
+            exit;
         }
 
         if ($property_name === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Property name is required.',
-                admin_url('admin.php?page=aboyuma-product-property-add')
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-add&status=error&message=' .
+                        urlencode('Property name is required.')
+                )
             );
+            exit;
         }
 
         if ($property_type === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Property type is required.',
-                admin_url('admin.php?page=aboyuma-product-property-add')
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-add&status=error&message=' .
+                        urlencode('Property type is required.')
+                )
             );
+            exit;
         }
 
         // Insert
@@ -162,26 +155,32 @@ class Aboyuma_Product_Property_Admin {
 
             // Duplicate key handling
             if (strpos($this->wpdb->last_error, 'Duplicate entry') !== false) {
-                Aboyuma_Flash_Helper::redirect(
-                    'error',
-                    'Property key already exists. It must be unique.',
-                    admin_url('admin.php?page=aboyuma-product-property-add')
+                wp_safe_redirect(
+                    admin_url(
+                        'admin.php?page=aboyuma-product-property-add&status=error&message=' .
+                            urlencode('Property key already exists. It must be unique.')
+                    )
                 );
+                exit;
             }
 
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Database error: ' . $this->wpdb->last_error,
-                admin_url('admin.php?page=aboyuma-product-property-add')
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-add&status=error&message=' .
+                        urlencode('Database error: ' . $this->wpdb->last_error)
+                )
             );
+            exit;
         }
 
         // Success
-        Aboyuma_Flash_Helper::redirect(
-            'success',
-            'Property added successfully.',
-            admin_url('admin.php?page=aboyuma-product-property-list')
+        wp_safe_redirect(
+            admin_url(
+                'admin.php?page=aboyuma-product-property-list&status=success&message=' .
+                    urlencode('Property added successfully.')
+            )
         );
+        exit;
     }
 
     /**
@@ -201,37 +200,19 @@ class Aboyuma_Product_Property_Admin {
         }
 
         // Get existing property
-        $property = $this->wpdb->get_row(
+        $properties = $this->wpdb->get_row(
             $this->wpdb->prepare(
                 "SELECT * FROM {$this->table} WHERE id = %d",
                 $property_id
             )
         );
 
-        if (! $property) {
+        if (!$properties) {
             echo '<div class="notice notice-error is-dismissible">
             <p>Property not found.</p>
         </div>';
             return;
         }
-
-        // Flash data
-        $transient_key = Aboyuma_Flash_Helper::get_flash_key();
-        $status_data   = get_transient($transient_key);
-
-        if ($status_data !== false) {
-            delete_transient($transient_key);
-        }
-
-        $status_message = $status_data['status'] ?? null;
-        $old_input      = $status_data['old_input'] ?? [];
-
-        // Clean form data (NO $_POST in template)
-        $form_data = [
-            'property_name'        => $old_input['property_name'] ?? $property->property_name,
-            'property_type'        => $old_input['property_type'] ?? $property->property_type,
-            'property_description' => $old_input['property_description'] ?? $property->property_description,
-        ];
 
         require plugin_dir_path(__FILE__) . 'partials/template-product-property-edit.php';
     }
@@ -261,9 +242,9 @@ class Aboyuma_Product_Property_Admin {
             wp_die('Invalid property ID.');
         }
 
-        $property_name = sanitize_text_field($_POST['property_name'] ?? '');
-        $property_type = sanitize_text_field($_POST['property_type'] ?? '');
-        $property_description = wp_kses_post($_POST['property_description'] ?? '');
+        $property_name = sanitize_text_field($_POST['property_name']);
+        $property_type = sanitize_text_field($_POST['property_type']);
+        $property_description = wp_kses_post($_POST['property_description']);
 
         $edit_url = admin_url(
             'admin.php?page=aboyuma-product-property-edit&id=' . $property_id
@@ -271,33 +252,23 @@ class Aboyuma_Product_Property_Admin {
 
         // Validation
         if ($property_name === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Property name is required.',
-                $edit_url,
-                [
-                    'old_input' => [
-                        'property_name'        => $property_name,
-                        'property_type'        => $property_type,
-                        'property_description' => $property_description,
-                    ],
-                ]
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-edit&status=error&message=' .
+                        urlencode('Property name is required.')
+                )
             );
+            exit;
         }
 
         if ($property_type === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Property type is required.',
-                $edit_url,
-                [
-                    'old_input' => [
-                        'property_name'        => $property_name,
-                        'property_type'        => $property_type,
-                        'property_description' => $property_description,
-                    ],
-                ]
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-edit&status=error&message=' .
+                        urlencode('Property type is required.')
+                )
             );
+            exit;
         }
 
         $updated = $this->wpdb->update(
@@ -319,26 +290,23 @@ class Aboyuma_Product_Property_Admin {
         );
 
         if ($updated === false) {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Database error: ' . $this->wpdb->last_error,
-                $edit_url,
-                [
-                    'old_input' => [
-                        'property_name'        => $property_name,
-                        'property_type'        => $property_type,
-                        'property_description' => $property_description,
-                    ],
-                ]
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-property-edit&status=error&message=' .
+                        urlencode('Database error: ' . $this->wpdb->last_error)
+                )
             );
+            exit;
         }
 
         // Success
-        Aboyuma_Flash_Helper::redirect(
-            'success',
-            'Property updated successfully.',
-            admin_url('admin.php?page=aboyuma-product-property-list')
+        wp_safe_redirect(
+            admin_url(
+                'admin.php?page=aboyuma-product-property-list&status=success&message=' .
+                    urlencode('Property updated successfully.')
+            )
         );
+        exit;
     }
 
     /**
@@ -348,7 +316,7 @@ class Aboyuma_Product_Property_Admin {
      */
     public function property_delete_ajax_handler() {
 
-        check_ajax_referer('aboyuma_property_delete', 'nonce');
+        check_ajax_referer('aboyuma_product_property_delete', 'nonce');
 
         $property_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
 
