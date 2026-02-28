@@ -2,12 +2,14 @@
     <h1 class="wp-heading-inline">Add New Product</h1>
     <hr class="wp-header-end">
 
-    <?php if (
-        is_array($status_message) &&
-        isset($status_message['status']['type'], $status_message['status']['message'])
-    ) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['status']['message']); ?></p>
+    <?php
+    $status  = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    $message = isset($_GET['message']) ? sanitize_text_field($_GET['message']) : '';
+
+    if ($status && $message) :
+    ?>
+        <div class="notice notice-<?php echo esc_attr($status); ?> is-dismissible">
+            <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
 
@@ -204,23 +206,11 @@
             <!-- WYSIWYG FIELDS -->
             <?php
             $editors = [
-                'product_short_description' => [
-                    'rows' => 5,
-                    'media' => false,
-                    'required' => true,
-                    'description' => 'คำอธิบายสั้น ๆ ของสินค้า ใช้แสดงในหน้ารายการสินค้า'
-                ],
                 'product_description' => [
                     'rows' => 5,
                     'media' => false,
                     'required' => true,
                     'description' => 'รายละเอียดภาพรวมของสินค้า แสดงในหน้ารายละเอียดสินค้า'
-                ],
-                'product_benefit' => [
-                    'rows' => 5,
-                    'media' => false,
-                    'required' => true,
-                    'description' => 'ระบุคุณประโยชน์หรือจุดเด่นของสินค้า'
                 ],
                 'product_detail' => [
                     'rows' => 20,
@@ -282,6 +272,39 @@
                 </tr>
             <?php endforeach; ?>
 
+            <tr>
+                <th scope="row">
+                    <label for="product_price">Product Price</label>
+                </th>
+                <td>
+                    <input type="number"
+                        id="product_price"
+                        name="product_price"
+                        class="regular-text"
+                        step="0.01"
+                        min="0"
+                        value="<?php echo isset($old['product_price']) ? esc_attr($old['product_price']) : ''; ?>"
+                        required>
+                    <p class="description">Regular selling price (e.g. 199.00)</p>
+                </td>
+            </tr>
+
+            <tr>
+                <th scope="row">
+                    <label for="product_member_price">Member Price</label>
+                </th>
+                <td>
+                    <input type="number"
+                        id="product_member_price"
+                        name="product_member_price"
+                        class="regular-text"
+                        step="0.01"
+                        min="0"
+                        value="<?php echo isset($old['product_member_price']) ? esc_attr($old['product_member_price']) : ''; ?>">
+                    <p class="description">Optional discounted price for members</p>
+                </td>
+            </tr>
+
             <!-- PROPERTIES (Grouped) -->
             <tr>
                 <th>Product Properties</th>
@@ -338,11 +361,6 @@
                     'label' => 'Product Shop Link',
                     'required' => true,
                     'description' => 'ลิงก์ไปยังหน้าซื้อสินค้าหรือร้านค้าออนไลน์'
-                ],
-                'product_sop_link' => [
-                    'label' => 'Product SOP Link',
-                    'required' => false,
-                    'description' => 'ลิงก์ไปยังเอกสาร SOP หรือเอกสารข้อมูลสินค้า'
                 ],
                 'product_sale_article_link' => [
                     'label' => 'Product Sale Article Link',
@@ -412,6 +430,61 @@
                     <p class="description">
                         กำหนด URL ของสินค้า (ตัวอักษรภาษาอังกฤษ ตัวเลข และขีดกลางเท่านั้น) หากไม่กรอก ระบบอาจสร้างให้อัตโนมัติ
                     </p>
+                </td>
+            </tr>
+
+            <tr>
+                <th scope="row">
+                    <label>Product Videos</label>
+                </th>
+                <td>
+
+                    <!-- Video 1 -->
+                    <fieldset style="margin-bottom:15px;">
+                        <strong>Video 1</strong>
+
+                        <p>
+                            <label for="video_1_url">Video URL</label><br>
+                            <input type="url"
+                                id="video_1_url"
+                                name="video_datas[0][video_url]"
+                                class="regular-text"
+                                placeholder="https://youtube.com/...">
+                        </p>
+
+                        <p>
+                            <label for="video_1_comment">Video Comment</label><br>
+                            <input type="text"
+                                id="video_1_comment"
+                                name="video_datas[0][video_comment]"
+                                class="regular-text"
+                                placeholder="Optional description">
+                        </p>
+                    </fieldset>
+
+                    <!-- Video 2 -->
+                    <fieldset>
+                        <strong>Video 2</strong>
+
+                        <p>
+                            <label for="video_2_url">Video URL</label><br>
+                            <input type="url"
+                                id="video_2_url"
+                                name="video_datas[1][video_url]"
+                                class="regular-text"
+                                placeholder="https://youtube.com/...">
+                        </p>
+
+                        <p>
+                            <label for="video_2_comment">Video Comment</label><br>
+                            <input type="text"
+                                id="video_2_comment"
+                                name="video_datas[1][video_comment]"
+                                class="regular-text"
+                                placeholder="Optional description">
+                        </p>
+                    </fieldset>
+
                 </td>
             </tr>
 

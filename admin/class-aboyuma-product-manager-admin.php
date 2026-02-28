@@ -183,11 +183,18 @@ class Aboyuma_Product_Manager_Admin {
 			true
 		);
 
+		wp_enqueue_media();
+
 		// Main admin script
 		wp_enqueue_script(
 			$this->plugin_name,
 			plugin_dir_url(__FILE__) . 'js/aboyuma-product-manager-admin.js',
-			array('jquery', 'bootstrap-js', 'datatables-js'),
+			array(
+				'jquery',
+				'bootstrap-js',
+				'datatables-js',
+				'jquery-ui-sortable'
+			),
 			$this->version,
 			false
 		);
@@ -218,11 +225,22 @@ class Aboyuma_Product_Manager_Admin {
 				'nonce'   => wp_create_nonce('aboyuma_product_property_delete'),
 			]
 		);
+
+		wp_localize_script(
+			$this->plugin_name,
+			'productDelete',
+			[
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce'   => wp_create_nonce('aboyuma_product_delete'),
+			]
+		);
 	}
 
 	/**
 	 * Check whether current admin page belongs to Aboyuma plugin.
 	 *
+	 * @since  1.0.0
+	 * 
 	 * @return bool
 	 */
 	private function is_allowed_admin_page() {
@@ -252,9 +270,7 @@ class Aboyuma_Product_Manager_Admin {
 	}
 
 	/**
-	 * ------------------------------------------------------------
 	 * Register Admin Menu Structure
-	 * ------------------------------------------------------------
 	 *
 	 * This method registers the full admin menu hierarchy
 	 * for the Aboyuma Product Manager plugin.
@@ -266,12 +282,6 @@ class Aboyuma_Product_Manager_Admin {
 	 *
 	 * - WordPress automatically generates hook names based on:
 	 *   {parent_slug}_page_{menu_slug}
-	 *
-	 * Example:
-	 *   aboyuma-product-list_page_aboyuma-product-category-list
-	 *
-	 * - These hook names are used for conditional asset loading
-	 *   inside admin_enqueue_scripts.
 	 *
 	 * @since 1.0.0
 	 */
@@ -327,7 +337,7 @@ class Aboyuma_Product_Manager_Admin {
 			null,
 			$capability,
 			'aboyuma-product-edit',
-			'aboyuma_product_edit'
+			[$this->product_admin, 'product_edit']
 		);
 
 		/**

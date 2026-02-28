@@ -2,12 +2,14 @@
     <h1 class="wp-heading-inline">Add New Brand</h1>
     <hr class="wp-header-end">
 
-    <?php if (
-        is_array($status_message) &&
-        isset($status_message['status']['type'], $status_message['status']['message'])
-    ) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['status']['message']); ?></p>
+    <?php
+    $status  = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    $message = isset($_GET['message']) ? sanitize_text_field($_GET['message']) : '';
+
+    if ($status && $message) :
+    ?>
+        <div class="notice notice-<?php echo esc_attr($status); ?> is-dismissible">
+            <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
 

@@ -116,11 +116,6 @@ class Aboyuma_Product_Manager {
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-aboyuma-product-manager-admin.php';
 
 		/**
-		 * ABO YUMA Custom Flash helper
-		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/helpers/class-aboyuma-flash-helper.php';
-
-		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
@@ -181,70 +176,80 @@ class Aboyuma_Product_Manager {
 		 */
 
 		// Category
-		$category_admin = $plugin_admin->get_category_admin();
+		$plugin_category_admin = $plugin_admin->get_category_admin();
 		$this->loader->add_action(
 			'admin_post_aboyuma_category_add',
-			$category_admin,
+			$plugin_category_admin,
 			'handle_category_add_post'
 		);
 		$this->loader->add_action(
 			'admin_post_aboyuma_category_edit',
-			$category_admin,
+			$plugin_category_admin,
 			'handle_category_edit_post'
 		);
 		$this->loader->add_action(
 			'wp_ajax_aboyuma_product_category_delete',
-			$category_admin,
+			$plugin_category_admin,
 			'category_delete_ajax_handler'
 		);
 
 		// Brand
-		$brand_admin = $plugin_admin->get_brand_admin();
+		$plugin_brand_admin = $plugin_admin->get_brand_admin();
 		$this->loader->add_action(
 			'admin_post_aboyuma_brand_add',
-			$brand_admin,
+			$plugin_brand_admin,
 			'handle_brand_add_post'
 		);
 		$this->loader->add_action(
 			'admin_post_aboyuma_brand_edit',
-			$brand_admin,
+			$plugin_brand_admin,
 			'handle_brand_edit_post'
 		);
 		$this->loader->add_action(
 			'wp_ajax_aboyuma_product_brand_delete',
-			$brand_admin,
+			$plugin_brand_admin,
 			'brand_delete_ajax_handler'
 		);
 
 		// Property
-		$property_admin = $plugin_admin->get_property_admin();
+		$plugin_property_admin = $plugin_admin->get_property_admin();
 		$this->loader->add_action(
 			'admin_post_aboyuma_property_add',
-			$property_admin,
+			$plugin_property_admin,
 			'handle_property_add_post'
 		);
 		$this->loader->add_action(
 			'admin_post_aboyuma_property_edit',
-			$property_admin,
+			$plugin_property_admin,
 			'handle_property_edit_post'
 		);
 		$this->loader->add_action(
-			'wp_ajax_aboyuma_property_delete',
-			$property_admin,
+			'wp_ajax_aboyuma_product_property_delete',
+			$plugin_property_admin,
 			'property_delete_ajax_handler'
 		);
 
 		// Product
-		$product_admin = $plugin_admin->get_product_admin();
+		$plugin_product_admin = $plugin_admin->get_product_admin();
+		$this->loader->add_action(
+			'wp_ajax_get_subcategories',
+			$plugin_product_admin,
+			'get_subcategories'
+		);
 		$this->loader->add_action(
 			'admin_post_aboyuma_product_add',
-			$product_admin,
+			$plugin_product_admin,
 			'handle_product_add_post'
 		);
 		$this->loader->add_action(
-			'wp_ajax_get_subcategories',
-			$product_admin,
-			'get_subcategories'
+			'admin_post_aboyuma_product_edit',
+			$plugin_product_admin,
+			'handle_product_edit_post'
+		);
+		$this->loader->add_action(
+			'wp_ajax_aboyuma_product_delete',
+			$plugin_product_admin,
+			'product_delete_ajax_handler'
 		);
 	}
 

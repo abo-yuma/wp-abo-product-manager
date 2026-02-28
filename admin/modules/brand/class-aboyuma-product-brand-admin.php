@@ -35,14 +35,6 @@ class Aboyuma_Product_Brand_Admin {
      */
     public function brand_list() {
 
-        // Retrieve notice (shared for add/edit/delete)
-        $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
-        $status_message = get_transient($transient_key);
-
-        if ($status_message !== false) {
-            delete_transient($transient_key);
-        }
-
         $brands = $this->wpdb->get_results(
             "
         SELECT 
@@ -70,13 +62,6 @@ class Aboyuma_Product_Brand_Admin {
      */
     public function brand_add() {
 
-        $transient_key  = Aboyuma_Flash_Helper::get_flash_key();
-        $status_message = get_transient($transient_key);
-
-        if ($status_message !== false) {
-            delete_transient($transient_key);
-        }
-
         require plugin_dir_path(__FILE__) . 'partials/template-product-brand-add.php';
     }
 
@@ -102,19 +87,19 @@ class Aboyuma_Product_Brand_Admin {
 
         // Validation (Guard Clause)
         if ($brand_name === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Brand name is required.',
-                admin_url('admin.php?page=aboyuma-product-brand-add')
+            wp_safe_redirect(
+                admin_url('admin.php?page=aboyuma-product-brand-add&status=error&message='
+                    . urlencode('Brand name is required.'))
             );
+            exit;
         }
 
         if ($brand_image_url === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Brand image URL is required.',
-                admin_url('admin.php?page=aboyuma-product-brand-add')
+            wp_safe_redirect(
+                admin_url('admin.php?page=aboyuma-product-brand-add&status=error&message='
+                    . urlencode('Brand image URL is required.'))
             );
+            exit;
         }
 
         $inserted = $this->wpdb->insert(
@@ -134,19 +119,21 @@ class Aboyuma_Product_Brand_Admin {
         );
 
         if ($inserted === false) {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Database error: ' . $this->wpdb->last_error,
-                admin_url('admin.php?page=aboyuma-product-brand-add')
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-brand-add&status=error&message=' .
+                        urlencode('Database error: ' . $this->wpdb->last_error)
+                )
             );
+            exit;
         }
 
         // Success
-        Aboyuma_Flash_Helper::redirect(
-            'success',
-            'Brand added successfully.',
-            admin_url('admin.php?page=aboyuma-product-brand-list')
+        wp_safe_redirect(
+            admin_url('admin.php?page=aboyuma-product-brand-list&status=success&message='
+                . urlencode('Brand added successfully.'))
         );
+        exit;
     }
 
     /**
@@ -166,36 +153,19 @@ class Aboyuma_Product_Brand_Admin {
         }
 
         // Get existing brand
-        $brand = $this->wpdb->get_row(
+        $brands = $this->wpdb->get_row(
             $this->wpdb->prepare(
                 "SELECT * FROM {$this->table} WHERE id = %d",
                 $brand_id
             )
         );
 
-        if (! $brand) {
+        if (! $brands) {
             echo '<div class="notice notice-error is-dismissible">
             <p>Brand not found.</p>
         </div>';
             return;
         }
-
-        // Transient (status + old form data)
-        $transient_key = Aboyuma_Flash_Helper::get_flash_key();
-        $status_data   = get_transient($transient_key);
-
-        if ($status_data !== false) {
-            delete_transient($transient_key);
-        }
-
-        $status_message = $status_data['status'] ?? null;
-        $old_input      = $status_data['old_input'] ?? [];
-
-        // Clean form data (NO $_POST in template)
-        $form_data = [
-            'brand_name'      => $old_input['brand_name'] ?? $brand->brand_name,
-            'brand_image_url' => $old_input['brand_image_url'] ?? $brand->brand_image_url,
-        ];
 
         require plugin_dir_path(__FILE__) . 'partials/template-product-brand-edit.php';
     }
@@ -228,37 +198,21 @@ class Aboyuma_Product_Brand_Admin {
         $brand_name      = sanitize_text_field($_POST['brand_name'] ?? '');
         $brand_image_url = esc_url_raw($_POST['brand_image_url'] ?? '');
 
-        $edit_url = admin_url(
-            'admin.php?page=aboyuma-product-brand-edit&id=' . $brand_id
-        );
-
         // Validation
         if ($brand_name === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Brand name is required.',
-                $edit_url,
-                [
-                    'old_input' => [
-                        'brand_name'      => $brand_name,
-                        'brand_image_url' => $brand_image_url,
-                    ],
-                ]
+            wp_safe_redirect(
+                admin_url('admin.php?page=aboyuma-product-brand-edit&status=error&message='
+                    . urlencode('Brand name is required.'))
             );
+            exit;
         }
 
         if ($brand_image_url === '') {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Brand image URL is required.',
-                $edit_url,
-                [
-                    'old_input' => [
-                        'brand_name'      => $brand_name,
-                        'brand_image_url' => $brand_image_url,
-                    ],
-                ]
+            wp_safe_redirect(
+                admin_url('admin.php?page=aboyuma-product-brand-edit&status=error&message='
+                    . urlencode('Brand image URL is required.'))
             );
+            exit;
         }
 
         $updated = $this->wpdb->update(
@@ -278,25 +232,21 @@ class Aboyuma_Product_Brand_Admin {
         );
 
         if ($updated === false) {
-            Aboyuma_Flash_Helper::redirect(
-                'error',
-                'Database error: ' . $this->wpdb->last_error,
-                $edit_url,
-                [
-                    'old_input' => [
-                        'brand_name'      => $brand_name,
-                        'brand_image_url' => $brand_image_url,
-                    ],
-                ]
+            wp_safe_redirect(
+                admin_url(
+                    'admin.php?page=aboyuma-product-brand-edit&status=error&message=' .
+                        urlencode('Database error: ' . $this->wpdb->last_error)
+                )
             );
+            exit;
         }
 
         // Success
-        Aboyuma_Flash_Helper::redirect(
-            'success',
-            'Brand updated successfully.',
-            admin_url('admin.php?page=aboyuma-product-brand-list')
+        wp_safe_redirect(
+            admin_url('admin.php?page=aboyuma-product-brand-list&status=success&message='
+                . urlencode('Brand updated successfully.'))
         );
+        exit;
     }
 
     /**

@@ -1,11 +1,14 @@
 # ABO YUMA Product Manager
 
-A custom WordPress plugin built on top of the [WordPress Plugin Boilerplate (wppb.me)](https://wppb.me/).
+A custom WordPress plugin built on top of the [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
 
-This project extends and restructures the default boilerplate to simplify development and improve maintainability.  
-It is specifically designed for Amway products and built exclusively for use with the ABO YUMA WordPress theme.
+It is specifically designed for Amway products and built exclusively for use with the ABO YUMA WordPress theme.  
+The plugin automatically registers:
 
-The plugin automatically registers product listing and product detail page, making them ready for front-end display.
+- Product listing page
+- Product detail page
+
+The development process follows a functionality-first mindset, followed by incremental refactoring.
 
 ---
 
@@ -27,36 +30,15 @@ The plugin automatically registers product listing and product detail page, maki
 
 ## 🔧 Installation
 
-### Requirements
-
-- WordPress 6.0+
-- PHP 8.0+
-- MySQL 5.7+ or MariaDB equivalent
+1. Place the plugin folder inside `wp-content/plugins/` directory.
+2. Activate the plugin through the Plugins screen (Plugins > Installed Plugins).
 
 ---
 
-### Installation
+## 🎨 Theme Dependency
 
-1. Place the plugin folder inside `wp-content/plugins/`.
-
-2. Log in to the WordPress Admin dashboard.
-
-3. Navigate to **Plugins → Installed Plugins**.
-
-4. Locate **Aboyuma Product Manager** and click **Activate**.
-
----
-
-### ⚠️ Theme Dependency
-
-This plugin is developed exclusively for use with the **ABO YUMA WordPress theme**.  
+⚠️ This plugin is developed exclusively for use with the **ABO YUMA WordPress theme**.  
 The theme must be installed and activated before using this plugin.
-
----
-
-## 🚧 Status
-
-Active development. Structure refactoring and validation improvements in progress.
 
 ---
 

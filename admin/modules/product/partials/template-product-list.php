@@ -8,12 +8,14 @@
 
     <hr class="wp-header-end">
 
-    <?php if (
-        ! empty($status_message['status']['type'])
-        && ! empty($status_message['status']['message'])
-    ) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['status']['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['status']['message']); ?></p>
+    <?php
+    $status  = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    $message = isset($_GET['message']) ? sanitize_text_field($_GET['message']) : '';
+
+    if ($status && $message) :
+    ?>
+        <div class="notice notice-<?php echo esc_attr($status); ?> is-dismissible">
+            <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
 
@@ -68,15 +70,7 @@
                         <td>
                             <a href="<?php echo esc_url(
                                             admin_url(
-                                                'admin.php?page=aboyuma-product-detail&id=' . $row->id
-                                            )
-                                        ); ?>">
-                                Detail
-                            </a>
-                            |
-                            <a href="<?php echo esc_url(
-                                            admin_url(
-                                                'admin.php?page=aboyuma-product-edit&id=' . $row->id
+                                                'admin.php?page=aboyuma-product-edit&product_id=' . $row->id
                                             )
                                         ); ?>">
                                 Edit

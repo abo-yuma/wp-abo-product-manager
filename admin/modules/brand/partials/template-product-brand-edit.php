@@ -2,9 +2,14 @@
     <h1 class="wp-heading-inline">Edit Product Brand</h1>
     <hr class="wp-header-end">
 
-    <?php if (! empty($status_message)) : ?>
-        <div class="notice notice-<?php echo esc_attr($status_message['type']); ?> is-dismissible">
-            <p><?php echo esc_html($status_message['message']); ?></p>
+    <?php
+    $status  = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    $message = isset($_GET['message']) ? sanitize_text_field($_GET['message']) : '';
+
+    if ($status && $message) :
+    ?>
+        <div class="notice notice-<?php echo esc_attr($status); ?> is-dismissible">
+            <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
 
@@ -29,7 +34,7 @@
                         name="brand_image_url"
                         id="brand_image_url"
                         class="regular-text"
-                        value="<?php echo esc_attr($form_data['brand_image_url']); ?>"
+                        value="<?php echo esc_attr($brands->brand_image_url); ?>"
                         required />
                     <p class="description">ป้อน URL ที่ถูกต้องซึ่งชี้ไปยังรูปภาพของแบรนด์ แนะนำให้ใช้ลิงก์จาก official Amway website</p>
                 </td>
@@ -44,7 +49,7 @@
                         name="brand_name"
                         id="brand_name"
                         class="regular-text"
-                        value="<?php echo esc_attr($form_data['brand_name']); ?>"
+                        value="<?php echo esc_attr($brands->brand_name); ?>"
                         required />
                     <p class="description">ชื่อแบรนด์ เช่น Nutrilite แนะนำให้ใช้เป็นภาษาอังกฤษ</p>
                 </td>
