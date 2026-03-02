@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://https://aboyuma.com
+ * @link       https://aboyuma.com
  * @since      1.0.0
  *
  * @package    Aboyuma_Product_Manager
