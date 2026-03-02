@@ -3,7 +3,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       https://https://aboyuma.com
+ * @link       https://aboyuma.com
  * @since      1.0.0
  *
  * @package    Aboyuma_Product_Manager
@@ -30,7 +30,6 @@ class Aboyuma_Product_Manager_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		flush_rewrite_rules();
 	}
-
 }

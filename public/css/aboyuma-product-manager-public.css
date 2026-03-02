@@ -2,3 +2,20 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+/* Base font size control */
+.aboyuma-products-list {
+  font-size: 14px; 
+}
+
+.aboyuma-products-list th {
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.aboyuma-products-list td {
+  font-size: 1em;
+}
+
+.aboyuma-products-list .btn {
+  font-size: 1em;
+}

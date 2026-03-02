@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://https://aboyuma.com
+ * @link       https://aboyuma.com
  * @since      1.0.0
  *
  * @package    Aboyuma_Product_Manager
@@ -266,6 +266,11 @@ class Aboyuma_Product_Manager {
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+
+		$this->loader->add_action('init', $plugin_public, 'register_product_page_rewrite_rule');
+		$this->loader->add_filter('query_vars', $plugin_public, 'register_query_vars');
+
+		$this->loader->add_filter('the_content', $plugin_public, 'render_product_content');
 	}
 
 	/**
