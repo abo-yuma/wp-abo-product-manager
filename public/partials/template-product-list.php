@@ -5,14 +5,14 @@
 
 
     <table id="aboyuma-product-list-table"
-        class="table table-striped table-bordered align-middle"
+        class="table table-striped align-middle"
         style="width:100%">
 
         <thead>
             <tr>
-                <th style="width:30%;">สินค้า</th>
-                <th>คำอธิบาย</th>
-                <th style="width:120px;">รายละเอียด</th>
+                <th>🛍️ สินค้า</th>
+                <th>📝 คำอธิบาย</th>
+                <th>📋 รายละเอียด</th>
             </tr>
         </thead>
 
@@ -40,8 +40,7 @@
                             <img
                                 src="<?php echo esc_url($image_url); ?>"
                                 alt="<?php echo esc_attr($product->product_name); ?>"
-                                class="img-fluid mb-2"
-                                style="max-height: 120px; width: auto; height: auto;">
+                                class="img-fluid mb-2">
                         <?php else: ?>
                             <div class="mb-2 text-muted small">
                                 No image
@@ -65,9 +64,14 @@
 
                     <!-- View Button -->
                     <td class="text-center">
-                        <a href="<?php echo esc_url(home_url('/amway-products/'
-                                        . $product->product_slug)); ?>"
-                            class="btn btn-outline-primary btn-sm">
+                        <a href="<?php echo esc_url(
+                                        add_query_arg(
+                                            'product_slug',
+                                            $product->product_slug,
+                                            get_permalink(get_option('aboyuma_product_page_id'))
+                                        )
+                                    ); ?>"
+                            class="btn btn-sm btn-outline-primary">
                             ดูรายละเอียด
                         </a>
                     </td>
@@ -78,7 +82,5 @@
         </tbody>
 
     </table>
-
-
 
 </div>

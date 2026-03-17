@@ -2,6 +2,18 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+/* Fix cramped "Show entries" dropdown in DataTables (WordPress admin) */
+.dataTables_length select {
+  min-width: 50px;
+  padding-right: 10px;
+}
+
+/* Add space between search box and the table */
+.dataTables_filter {
+  margin-bottom: 10px;
+}
+
 .wp-list-table .column-image img {
   width: 150px;
   height: auto;

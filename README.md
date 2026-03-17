@@ -21,16 +21,35 @@ The plugin automatically registers product pages.
 
 ## 🔁 Public-facing page routing
 
-
 ## 🔧 Installation
 
 1. Place the plugin folder inside `wp-content/plugins/` directory.
 2. Activate the plugin through the Plugins screen (Plugins > Installed Plugins).
 
-## 🎨 Theme Dependency
+## 🎨 Theme Dependency & Compatibility
 
-⚠️ This plugin is developed exclusively for use with the **ABO YUMA WordPress theme**.  
-The theme must be installed and activated before using this plugin.
+⚠️ This plugin is developed primarily for use with the **ABO YUMA WordPress theme**.
+
+It assumes that the theme already provides:
+
+- Bootstrap (CSS & JS) integration
+- Proper Bootstrap enqueue handling
+- Base layout structure compatible with Bootstrap components
+
+This plugin does **not** bundle or enqueue its own Bootstrap framework on the public-facing side. It only enqueues plugin-specific assets and dependencies (such as DataTables).
+
+### ✅ Best Compatibility
+
+The plugin works best when used with the **ABO YUMA theme**, where Bootstrap is already integrated and properly configured.
+
+### ⚠️ Using With Other Themes
+
+If activated with another theme that does not include Bootstrap:
+
+- Frontend styling may appear broken or unstyled
+- Layout components relying on Bootstrap classes may not render correctly
+
+If support for other themes is required, Bootstrap integration must be handled either by the theme or manually extended within the plugin.
 
 ## 📌 TODO
 

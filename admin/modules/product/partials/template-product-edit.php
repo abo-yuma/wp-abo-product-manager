@@ -596,9 +596,11 @@
                 <td>
                     <input type="text" name="product_slug" id="product_slug"
                         class="regular-text"
-                        value="<?php echo esc_attr($product->product_slug); ?>" required>
+                        value="<?php echo esc_attr($product->product_slug); ?>" readonly>
                     <p class="description">
-                        กำหนด URL ของสินค้า (ตัวอักษรภาษาอังกฤษ ตัวเลข และขีดกลางเท่านั้น) หากไม่กรอก ระบบอาจสร้างให้อัตโนมัติ
+                        Slug ของสินค้านี้ถูกล็อกไว้เพื่อป้องกันการเปลี่ยน URL
+                        ซึ่งอาจทำให้ลิงก์เดิมและ SEO เสียหาย
+                        หากจำเป็นต้องแก้ไข กรุณาดำเนินการผ่าน Database โดยผู้ดูแลระบบ
                     </p>
                 </td>
             </tr>

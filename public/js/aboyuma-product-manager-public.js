@@ -28,24 +28,63 @@
    * Although scripts in the WordPress core, Plugins and Themes may be
    * practising this, we should strive to set a better example in our own work.
    */
-  
+
   $(function () {
     // Check if DataTables is loaded
     if (typeof $.fn.DataTable === "undefined") {
       console.error("DataTables not loaded");
       return;
     }
+    const isDesktop = window.matchMedia("(min-width: 769px)").matches;
+    let columnDefs = [];
+    if (isDesktop) {
+      columnDefs = [
+        {
+          width: "30%",
+          targets: [0],
+        },
+        {
+          width: "55%",
+          targets: [1],
+        },
+        {
+          width: "25%",
+          targets: [2],
+          orderable: false,
+        },
+      ];
+    }
 
     var table = $("#aboyuma-product-list-table");
 
     if (table.length) {
       table.DataTable({
-        pageLength: 9,
-        responsive: true,
-        ordering: true,
+        fixedColumns: {
+          start: 1,
+          end: 1,
+        },
+        paging: true,
+        scrollCollapse: true,
+        scrollX: true,
         searching: true,
-        info: true,
+        autoWidth: false,
+        responsive: true,
+        columnDefs: columnDefs,
+        info: false,
+        ordering: true,
       });
     }
+
+    // Product image simple lightbox gallery
+    var productImageLightbox = new SimpleLightbox(".product-lightbox", {
+      captions: false,
+      showCounter: true,
+      navText: ["‹", "›"],
+    });
+
+    // Fancybox videos
+    Fancybox.bind("[data-fancybox]", {
+      dragToClose: false,
+    });
   });
 })(jQuery);

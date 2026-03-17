@@ -67,6 +67,5 @@ class Aboyuma_Product_Manager_Activator {
 			update_option('aboyuma_product_page_id', $product_page->ID);
 		}
 
-		flush_rewrite_rules();
 	}
 }
