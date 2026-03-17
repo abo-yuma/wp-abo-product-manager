@@ -128,6 +128,7 @@ class Aboyuma_Product_Admin {
             "
         SELECT
             id,
+            product_name,
             main_image_id,
             product_description,
             created,
@@ -580,7 +581,7 @@ class Aboyuma_Product_Admin {
         // Selected properties.
         $selected_properties = $this->wpdb->get_col(
             $this->wpdb->prepare(
-                "SELECT p.property_key
+                "SELECT p.property_key, p.property_type
              FROM {$this->table_property_pivot} pp
              INNER JOIN {$this->table_property} p
              ON p.id = pp.property_id

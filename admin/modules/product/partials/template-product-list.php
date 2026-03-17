@@ -25,6 +25,7 @@
         <thead>
             <tr>
                 <th>Image</th>
+                <th>Name</th>
                 <th>Description</th>
                 <th>Created</th>
                 <th>Modified</th>
@@ -56,7 +57,19 @@
                         </td>
 
                         <td>
-                            <?php echo esc_html($row->product_description); ?>
+                            <?php echo esc_html($row->product_name); ?>
+                        </td>
+
+                        <td>
+                            <?php
+                            echo esc_html(
+                                wp_trim_words(
+                                    wp_strip_all_tags($row->product_description),
+                                    20,
+                                    '...'
+                                )
+                            );
+                            ?>
                         </td>
 
                         <td>

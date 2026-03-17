@@ -267,10 +267,13 @@ class Aboyuma_Product_Manager {
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 
-		$this->loader->add_action('init', $plugin_public, 'register_product_page_rewrite_rule');
 		$this->loader->add_filter('query_vars', $plugin_public, 'register_query_vars');
 
+		// Prepare product detail page context before theme render.
+		//$this->loader->add_action('template_redirect', $plugin_public, 'setup_product_detail_page');
 		$this->loader->add_filter('the_content', $plugin_public, 'render_product_content');
+
+		$this->loader->add_action('after_setup_theme', $plugin_public, 'register_image_sizes');
 	}
 
 	/**
