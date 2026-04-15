@@ -269,9 +269,55 @@ class Aboyuma_Product_Manager {
 
 		$this->loader->add_filter('query_vars', $plugin_public, 'register_query_vars');
 
-		// Prepare product detail page context before theme render.
-		//$this->loader->add_action('template_redirect', $plugin_public, 'setup_product_detail_page');
-		$this->loader->add_filter('the_content', $plugin_public, 'render_product_content');
+		/**
+		 * IMPORTANT: Execution order for virtual product pages
+		 *
+		 * We must register SEO metadata BEFORE the theme outputs <head>.
+		 *
+		 * Hook order in WordPress lifecycle:
+		 *
+		 * 1. template_redirect
+		 *    - Runs after WordPress resolves the queried object
+		 *    - Allows us to detect the virtual product page via query var (product_slug)
+		 *    - Used to register:
+		 *        • dynamic document title
+		 *        • meta description
+		 *        • canonical URL
+		 *        • page title suppression
+		 *
+		 * 2. wp_head
+		 *    - Triggered inside theme header.php
+		 *    - Outputs SEO meta tags added in template_redirect
+		 *
+		 * 3. the_content
+		 *    - Runs later when rendering page body
+		 *    - Used to output product templates (list or detail)
+		 *
+		 * If SEO logic is placed inside the_content,
+		 * it will execute too late because <head> has already been rendered.
+		 *
+		 * Therefore:
+		 * template_redirect → prepare SEO
+		 * the_content       → render UI
+		 */
+		$this->loader->add_action(
+			'template_redirect',
+			$plugin_public,
+			'setup_product_detail_page'
+		);
+
+		/**
+		 * Render product templates.
+		 *
+		 * This filter appends the product list template
+		 * or replaces the content with the product detail template
+		 * depending on the presence of product_slug.
+		 */
+		$this->loader->add_filter(
+			'the_content',
+			$plugin_public,
+			'render_product_content'
+		);
 
 		$this->loader->add_action('after_setup_theme', $plugin_public, 'register_image_sizes');
 	}
