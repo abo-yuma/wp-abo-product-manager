@@ -151,7 +151,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// DataTables Bootstrap 5 CSS
 		wp_enqueue_style(
-			'aboyuma-datatables-bootstrap5',
+			'aboyuma-product-datatables-bootstrap5',
 			'https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css',
 			array(),
 			'2.2.2'
@@ -159,9 +159,9 @@ class Aboyuma_Product_Manager_Public {
 
 		// FixedColumns Bootstrap 5 CSS
 		wp_enqueue_style(
-			'aboyuma-datatables-fixedcolumns-bootstrap5',
+			'aboyuma-product-datatables-fixedcolumns-bootstrap5',
 			'https://cdn.datatables.net/fixedcolumns/5.0.4/css/fixedColumns.bootstrap5.css',
-			array('aboyuma-datatables-bootstrap5'),
+			array('aboyuma-product-datatables-bootstrap5'),
 			'5.0.4'
 		);
 
@@ -175,7 +175,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// Font Awesome
 		wp_enqueue_style(
-			'fontawesome',
+			'aboyuma-product-fontawesome',
 			'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
 			array(),
 			'6.5.1'
@@ -183,7 +183,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// SimpleLightbox CSS
 		wp_enqueue_style(
-			'simplelightbox',
+			'aboyuma-product-simplelightbox',
 			'https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.3/simple-lightbox.min.css',
 			[],
 			'2.14.3'
@@ -191,7 +191,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// Fancybox
 		wp_enqueue_style(
-			'fancybox-css',
+			'aboyuma-product-fancybox-css',
 			'https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css',
 			array(),
 			'5.0'
@@ -260,7 +260,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// SimpleLightbox JS
 		wp_enqueue_script(
-			'simplelightbox',
+			'aboyuma-product-simplelightbox',
 			'https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.3/simple-lightbox.jquery.min.js',
 			array('jquery'),
 			'2.14.3',
@@ -269,7 +269,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// Fancybox
 		wp_enqueue_script(
-			'fancybox-js',
+			'aboyuma-product-fancybox-js',
 			'https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js',
 			array(),
 			'5.0',
@@ -380,30 +380,6 @@ class Aboyuma_Product_Manager_Public {
 			$gallery_images      = $relational_data['gallery_images'];
 			$tags_string         = $relational_data['tags_string'];
 			$videos              = $relational_data['videos'];
-
-			/**
-			 * SEO title adjustment
-			 */
-			add_filter('document_title_parts', function ($title) use ($product) {
-				$title['title'] = $product->product_name;
-				return $title;
-			});
-
-			/**
-			 * [ADDED] SEO meta description + canonical
-			 */
-			add_action('wp_head', function () use ($product) {
-
-				$description = $product->product_name . ' - ' .
-					wp_trim_words($product->product_description, 25, '');
-
-				$canonical = home_url('/amway-products/?product_slug=' . $product->product_slug);
-?>
-				<meta name="description" content="<?php echo esc_attr($description); ?>">
-				<link rel="canonical" href="<?php echo esc_url($canonical); ?>">
-<?php
-			}, 1); // priority ต่ำเพื่อให้โหลดก่อน plugin SEO
-
 
 			global $post;
 
@@ -588,6 +564,49 @@ class Aboyuma_Product_Manager_Public {
 		if (get_queried_object_id() !== $page_id) {
 			return;
 		}
+
+		/**
+		 * LOAD PRODUCT
+		 */
+		$product = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				"SELECT product_name, product_description, product_slug
+			FROM {$this->table_product}
+			WHERE product_slug = %s
+			LIMIT 1",
+				$product_slug
+			)
+		);
+
+		if (!$product) {
+			return;
+		}
+
+		/**
+		 * SEO title adjustment
+		 */
+		add_filter('document_title_parts', function ($title) use ($product) {
+			$title['title'] = $product->product_name;
+			return $title;
+		});
+
+		/**
+		 * [ADDED] SEO meta description + canonical
+		 */
+		add_action('wp_head', function () use ($product) {
+
+			$description = $product->product_name . ' - ' .
+				wp_trim_words($product->product_description, 25, '');
+
+			$canonical = home_url('/amway-products/?product_slug=' . $product->product_slug);
+
+			printf(
+				'<meta name="description" content="%s">' . "\n" .
+					'<link rel="canonical" href="%s">' . "\n",
+				esc_attr($description),
+				esc_url($canonical)
+			);
+		}, 1); // Low priority to load before SEO plugin
 
 		/**
 		 * Suppress the default page title.

@@ -18,8 +18,15 @@ The plugin automatically registers product pages.
 
 - Product listing with jQuery DataTables
 - Dynamic product detail page
+- Image gallery with Lightbox support
+- Basic SEO optimization for product detail pages
+  - Dynamic `<title>` tag based on product name
+  - Dynamic `<meta name="description">`
+  - Canonical URL to prevent duplicate content issues
+  - Suppression of default page title for virtual detail views
 
 ## 🔁 Public-facing page routing
+The plugin implements a virtual page routing mechanism using WordPress query variables and content filtering.
 
 ## 🔧 Installation
 
