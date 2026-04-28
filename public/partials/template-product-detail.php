@@ -1,3 +1,6 @@
+<?php
+/** @var stdClass $product */
+?>
 <div class="product-detail-wrapper">
 
     <section class="product-hero-section mb-3">
@@ -116,7 +119,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="btn btn-primary btn-sm rounded-3">
-                        🛒 ดูสินค้าที่ Amway
+                        🛍️ ดูสินค้าที่ Amway
                     </a>
                 </div>
             <?php endif; ?>
