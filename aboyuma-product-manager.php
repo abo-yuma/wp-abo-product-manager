@@ -8,17 +8,17 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://https://aboyuma.com
+ * @link              https://aboyuma.com
  * @since             1.0.0
  * @package           Aboyuma_Product_Manager
  *
  * @wordpress-plugin
  * Plugin Name:       ABO YUMA Product Manager
- * Plugin URI:        https://https://aboyuma.com
+ * Plugin URI:        https://aboyuma.com
  * Description:       Product manager for ABO YUMA personal blog.
  * Version:           1.0.0
  * Author:            Yuma
- * Author URI:        https://https://aboyuma.com/
+ * Author URI:        https://aboyuma.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       aboyuma-product-manager
