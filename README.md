@@ -1,18 +1,24 @@
 # ABO YUMA Product Manager
 
-A custom WordPress plugin built on top of the [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
+A custom WordPress product manager plugin built on top of the [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
+
+<img src="assets/aboyuma-product-manager-preview.png" width="650"/>  
 
 It is specifically designed for Amway products and built exclusively for use with the ABO YUMA WordPress theme.  
-The plugin automatically registers product pages.
+The plugin automatically registers product page.
+
+<img src="assets/auto-created-page-preview.png" width="500"/>  
 
 ⚠️ The development process follows a functionality-first mindset, followed by incremental refactoring.
 
 ## 📦 Admin Modules
 
-- Product (CRUD)
-- Product Property (CRUD)
-- Product Brand (CRUD)
-- Product Category (CRUD)
+<img src="assets/admin-menu-preview.png"/>  
+
+- Products (CRUD)
+- Product Properties (CRUD)
+- Categories (CRUD)
+- Brands (CRUD)
 
 ## 🌐 Public-Facing Features
 
@@ -28,38 +34,29 @@ The plugin automatically registers product pages.
 ## 🔁 Public-facing page routing
 The plugin implements a virtual page routing mechanism using WordPress query variables and content filtering.
 
-## 🔧 Installation
+<img src="assets/product-slug-preview.png" width="450"/> 
+
+## ⚙️ Installation
 
 1. Place the plugin folder inside `wp-content/plugins/` directory.
 2. Activate the plugin through the Plugins screen (Plugins > Installed Plugins).
 
-## 🎨 Theme Dependency & Compatibility
+## 🎨 Theme Compatibility
 
-⚠️ This plugin is developed primarily for use with the **ABO YUMA WordPress theme**.
+Optimized for the **ABO YUMA WordPress theme** with Bootstrap support.
 
-It assumes that the theme already provides:
+<img src="assets/public-facing-ui-preview.png" width="500"/>  
 
-- Bootstrap (CSS & JS) integration
-- Proper Bootstrap enqueue handling
-- Base layout structure compatible with Bootstrap components
+<br>
 
-This plugin does **not** bundle or enqueue its own Bootstrap framework on the public-facing side. It only enqueues plugin-specific assets and dependencies (such as DataTables).
+> This plugin requires [Bootstrap 5](https://getbootstrap.com/) and [jQuery DataTables (Bootstrap integration)](https://datatables.net/examples/styling/bootstrap5).  
+> It does not bundle these dependencies.
 
-### ✅ Best Compatibility
-
-The plugin works best when used with the **ABO YUMA theme**, where Bootstrap is already integrated and properly configured.
-
-### ⚠️ Using With Other Themes
-
-If activated with another theme that does not include Bootstrap:
-
-- Frontend styling may appear broken or unstyled
-- Layout components relying on Bootstrap classes may not render correctly
-
-If support for other themes is required, Bootstrap integration must be handled either by the theme or manually extended within the plugin.
+⚠️ Using it with themes that do not include Bootstrap may result in unstyled or broken layouts.
 
 ## 📌 TODO
 
 - Integrate PHP CodeSniffer (PHPCS) for automated code quality checks
 - Gradually align the codebase with WordPress PHP Coding Standards (WPCS)
 - Refactor and improve Admin modules for better maintainability
+- Improve form validation with client-side JavaScript validation
