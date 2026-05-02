@@ -9,10 +9,12 @@ The plugin automatically registers product pages.
 
 ## 📦 Admin Modules
 
-- Product (CRUD)
-- Product Property (CRUD)
-- Product Brand (CRUD)
-- Product Category (CRUD)
+<img src="admin-menu-preview.png" width="250"/>  
+
+- Products (CRUD)
+- Product Properties (CRUD)
+- Categories (CRUD)
+- Brands (CRUD)
 
 ## 🌐 Public-Facing Features
 
@@ -28,7 +30,7 @@ The plugin automatically registers product pages.
 ## 🔁 Public-facing page routing
 The plugin implements a virtual page routing mechanism using WordPress query variables and content filtering.
 
-## 🔧 Installation
+## ⚙️ Installation
 
 1. Place the plugin folder inside `wp-content/plugins/` directory.
 2. Activate the plugin through the Plugins screen (Plugins > Installed Plugins).
@@ -63,3 +65,4 @@ If support for other themes is required, Bootstrap integration must be handled e
 - Integrate PHP CodeSniffer (PHPCS) for automated code quality checks
 - Gradually align the codebase with WordPress PHP Coding Standards (WPCS)
 - Refactor and improve Admin modules for better maintainability
+- Improve form validation with client-side JavaScript validation
