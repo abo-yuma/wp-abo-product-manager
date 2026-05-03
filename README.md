@@ -1,15 +1,15 @@
 # ABO YUMA Product Manager
 
-A custom WordPress product manager plugin built on top of the [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
+A custom WordPress product manager plugin built on top of the [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).  
+This plugin is intended to present product information and reviews in a structured, user-friendly format for customers.
 
 <img src="assets/aboyuma-product-manager-preview.png" width="650"/>  
 
-It is specifically designed for Amway products and built exclusively for use with the ABO YUMA WordPress theme.  
+It is specifically designed for Amway products and built exclusively for use with the **ABO YUMA theme**.  
+
 The plugin automatically registers product page.
 
 <img src="assets/auto-created-page-preview.png" width="500"/>  
-
-⚠️ The development process follows a functionality-first mindset, followed by incremental refactoring.
 
 ## 📦 Admin Modules
 
@@ -20,7 +20,14 @@ The plugin automatically registers product page.
 - Categories (CRUD)
 - Brands (CRUD)
 
+### Workflow
+
+1. Create **Categories**, **Brands**, and **Product Properties**
+2. Create **Products** and assign the above data
+
 ## 🌐 Public-Facing Features
+
+<img src="assets/public-facing-ui-preview.png" width="500"/>  
 
 - Product listing with jQuery DataTables
 - Dynamic product detail page
@@ -43,16 +50,14 @@ The plugin implements a virtual page routing mechanism using WordPress query var
 
 ## 🎨 Theme Compatibility
 
-Optimized for the **ABO YUMA WordPress theme** with Bootstrap support.
+Optimized for the ABO YUMA theme with Bootstrap 5 and dark mode support.
 
-<img src="assets/public-facing-ui-preview.png" width="500"/>  
+This plugin requires [Bootstrap 5](https://getbootstrap.com/) and [jQuery DataTables (Bootstrap 5 integration)](https://datatables.net/examples/styling/bootstrap5).  
+It does not bundle these dependencies.
 
-<br>
-
-> This plugin requires [Bootstrap 5](https://getbootstrap.com/) and [jQuery DataTables (Bootstrap integration)](https://datatables.net/examples/styling/bootstrap5).  
-> It does not bundle these dependencies.
-
-⚠️ Using it with themes that do not include Bootstrap may result in unstyled or broken layouts.
+> ⚠️ Known limitation: This plugin is optimized for the ABO YUMA theme.  
+> When used with other Bootstrap-based themes, layout issues may occur.  
+> Compatibility improvements are planned for future updates.
 
 ## 📌 TODO
 
@@ -60,3 +65,4 @@ Optimized for the **ABO YUMA WordPress theme** with Bootstrap support.
 - Gradually align the codebase with WordPress PHP Coding Standards (WPCS)
 - Refactor and improve Admin modules for better maintainability
 - Improve form validation with client-side JavaScript validation
+- Improve inline code comments and documentation for better maintainability
