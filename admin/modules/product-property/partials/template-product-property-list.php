@@ -16,23 +16,24 @@
             <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
+    
+    <?php if (! empty($rows)) : ?>
+        <table id="aboyuma-product-property-table" class="wp-list-table widefat striped">
 
-    <table id="aboyuma-product-property-table" class="wp-list-table widefat striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Property key</th>
+                    <th>Property Name</th>
+                    <th>Property Type</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Property key</th>
-                <th>Property Name</th>
-                <th>Property Type</th>
-                <th>Created</th>
-                <th>Modified</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+            <tbody>
 
-        <tbody>
-            <?php if (! empty($rows)) : ?>
                 <?php foreach ($rows as $row) : ?>
                     <tr>
                         <td>
@@ -74,12 +75,14 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else : ?>
-                <tr>
-                    <td colspan="6">No properties found.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-
-    </table>
+            </tbody>
+        <?php else : ?>
+            <div class="notice notice-info inline">
+                <p>
+                    You have no properties yet.
+                    Please create your first property.
+                </p>
+            </div>
+        <?php endif; ?>
+        </table>
 </div>
