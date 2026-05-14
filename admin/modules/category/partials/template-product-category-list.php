@@ -17,19 +17,20 @@
         </div>
     <?php endif; ?>
 
-    <table id="aboyuma-product-category-table" class="wp-list-table widefat striped">
-        <thead>
-            <tr>
-                <th width="80">ID</th>
-                <th>Category Name</th>
-                <th width="100">Parent Name</th>
-                <th width="160">Created</th>
-                <th width="160">Modified</th>
-                <th width="120">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($categories)) : ?>
+    <?php if (!empty($categories)) : ?>
+        <table id="aboyuma-product-category-table" class="wp-list-table widefat striped">
+            <thead>
+                <tr>
+                    <th width="80">ID</th>
+                    <th>Category Name</th>
+                    <th width="100">Parent Name</th>
+                    <th width="160">Created</th>
+                    <th width="160">Modified</th>
+                    <th width="120">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
                 <?php foreach ($categories as $row) : ?>
                     <tr>
                         <td><?php echo esc_html($row->id); ?></td>
@@ -49,11 +50,14 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else : ?>
-                <tr>
-                    <td colspan="6">No categories found.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    <?php else : ?>
+        <div class="notice notice-info inline">
+            <p>
+                You have no categories yet.
+                Please create your first category.
+            </p>
+        </div>
+    <?php endif; ?>
 </div>
