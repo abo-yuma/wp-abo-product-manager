@@ -112,7 +112,7 @@ class Aboyuma_Product_Manager_Database {
 			product_shop_link VARCHAR(255) NOT NULL,
 			product_sale_article_link VARCHAR(255) NULL,
 			product_is_pinned TINYINT(1) NOT NULL DEFAULT 0,
-			UNIQUE KEY product_slug VARCHAR(255) NOT NULL,
+			product_slug VARCHAR(255) NOT NULL,
 			created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			modified DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),

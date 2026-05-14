@@ -323,12 +323,16 @@ class Aboyuma_Product_Manager_Public {
 	 */
 	public function render_product_content($content) {
 
-		if (!is_page('amway-products')) {
+		$page_id = (int) get_option('aboyuma_product_page_id');
+
+		if (get_queried_object_id() !== $page_id) {
 			return $content;
 		}
 
 		global $wpdb, $wp_query;
-		$product_slug = get_query_var('product_slug');
+		$product_slug = sanitize_title(
+			get_query_var('product_slug')
+		);
 
 		/**
 		 * Product list page
@@ -488,6 +492,31 @@ class Aboyuma_Product_Manager_Public {
 	}
 
 	/**
+	 * Generate product page URL.
+	 *
+	 * Supports both:
+	 * - Plain permalinks
+	 * - Pretty permalinks
+	 *
+	 * Avoid hardcoding page slugs or URL structures.
+	 *
+	 * @since 1.0.1
+	 *
+	 * @param string $product_slug Product slug.
+	 * @return string
+	 */
+	private function get_product_url($product_slug) {
+
+		$page_id = (int) get_option('aboyuma_product_page_id');
+
+		return add_query_arg(
+			'product_slug',
+			$product_slug,
+			get_permalink($page_id)
+		);
+	}
+
+	/**
 	 * Register custom image sizes for product display.
 	 *
 	 * This image size is used for rendering the main product image.
@@ -550,7 +579,9 @@ class Aboyuma_Product_Manager_Public {
 		}
 
 		// Retrieve product slug from query string.
-		$product_slug = get_query_var('product_slug');
+		$product_slug = sanitize_title(
+			get_query_var('product_slug')
+		);
 
 		// Retrieve stored product page ID.
 		$page_id = (int) get_option('aboyuma_product_page_id');
@@ -598,7 +629,7 @@ class Aboyuma_Product_Manager_Public {
 			$description = $product->product_name . ' - ' .
 				wp_trim_words($product->product_description, 25, '');
 
-			$canonical = home_url('/amway-products/?product_slug=' . $product->product_slug);
+			$canonical = $this->get_product_url($product->product_slug);
 
 			printf(
 				'<meta name="description" content="%s">' . "\n" .
