@@ -5,8 +5,8 @@
 /* ============================================================
    Product List Table (Plugin Side)
    ============================================================ */
-
-/* #aboyuma-product-list-table {
+ 
+#aboyuma-product-list-table {
   font-size: 0.875rem; 
 }
 
@@ -19,11 +19,6 @@
   font-size: 0.875rem;
   vertical-align: middle;
 }
-
-#aboyuma-product-list-table img {
-  min-width: 72px;
-  height: auto;
-} */
 
 /* ============================================================
    Flip Bootstrap 5 striped rows for DataTables
@@ -51,13 +46,13 @@
    "paint layer" Bootstrap uses for striping.
    ------------------------------------------------------------ */
 
-/* #aboyuma-product-list-table.table-striped > tbody > tr:nth-of-type(odd) > * {
+#aboyuma-product-list-table.table-striped > tbody > tr:nth-of-type(odd) > * {
   box-shadow: none !important;
 } */
 
-/* table.dataTable#aboyuma-product-list-table tbody td {
+table.dataTable#aboyuma-product-list-table tbody td {
   border-bottom: 1px solid var(--bs-border-color);
-} */
+}
 
 /* ------------------------------------------------------------
    2) EVEN rows: ADD the stripe
