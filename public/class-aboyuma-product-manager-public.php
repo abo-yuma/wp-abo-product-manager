@@ -340,7 +340,22 @@ class Aboyuma_Product_Manager_Public {
 		if (!$product_slug) {
 
 			$products = $wpdb->get_results(
-				"SELECT * FROM {$this->table_product} ORDER BY id DESC"
+				"SELECT 
+				p.product_name,
+				p.main_image_id,
+				p.product_description,
+				p.product_price,
+				p.product_member_price,
+				p.product_shop_link,
+				p.product_slug,
+				b.brand_name,
+				c.category_name
+				FROM {$this->table_product} p
+				LEFT JOIN {$this->table_brand} b 
+					ON p.product_brand_id = b.id
+				LEFT JOIN {$this->table_category} c 
+					ON p.product_category_id = c.id
+				"
 			);
 
 			if (!empty($products)) {
