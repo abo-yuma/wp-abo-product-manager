@@ -5,22 +5,20 @@
 
 
     <table id="aboyuma-product-list-table"
-        class="table table-striped align-middle"
-        style="width:100%">
+        class="table"
+        style="height:fit-content">
 
         <thead>
             <tr>
                 <th>🛍️ สินค้า</th>
-                <th>📝 คำอธิบาย</th>
-                <th>📋 รายละเอียด</th>
+                <th>📝 รายละเอียด</th>
             </tr>
         </thead>
 
         <tbody>
             <?php foreach ($products as $product): ?>
 
-
-                <tr>
+                <tr style="height:100%">
 
                     <!-- Product Column -->
                     <td class="text-center align-middle">
@@ -55,25 +53,75 @@
 
                     <!-- Description Column -->
                     <td>
-                        <?php
-                        echo esc_html(
-                            wp_trim_words($product->product_description, 25, '...')
-                        );
-                        ?>
-                    </td>
+                        <div class="d-flex flex-column h-100">
+                            <!-- Brand + Category -->
+                            <div class="d-flex flex-wrap gap-2 mb-2">
 
-                    <!-- View Button -->
-                    <td class="text-center">
-                        <a href="<?php echo esc_url(
-                                        add_query_arg(
-                                            'product_slug',
-                                            $product->product_slug,
-                                            get_permalink(get_option('aboyuma_product_page_id'))
-                                        )
-                                    ); ?>"
-                            class="btn btn-sm btn-outline-primary">
-                            ดูรายละเอียด
-                        </a>
+                                <?php if (!empty($product->brand_name)) : ?>
+                                    <span class="badge text-bg-secondary">
+                                        🏷️ <?php echo esc_html($product->brand_name); ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                <?php if (!empty($product->category_name)) : ?>
+                                    <span class="badge text-bg-secondary">
+                                        🗂️ <?php echo esc_html($product->category_name); ?>
+                                    </span>
+                                <?php endif; ?>
+
+                            </div>
+
+                            <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+
+                                <?php if ($product->product_member_price > 0) : ?>
+
+                                    <!-- Regular Price -->
+                                    <span class="small">
+                                        ราคา :
+                                        <del>
+                                            ฿<?php echo number_format($product->product_price, 2); ?>
+                                        </del>
+                                    </span>
+
+                                    <!-- Member Price -->
+                                    <span class="fw-semibold">
+                                        💳 ฿<?php echo number_format($product->product_member_price, 2); ?>
+                                        <span class="text-danger small">*เฉพาะสมาชิก</span>
+                                    </span>
+
+                                <?php else : ?>
+
+                                    <!-- Regular Price Only -->
+                                    <span class="fw-semibold text-dark">
+                                        ฿<?php echo number_format($product->product_price, 2); ?>
+                                    </span>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                            <div class="mb-2">
+                                <?php
+                                echo esc_html(
+                                    wp_trim_words($product->product_description, 25, '...')
+                                );
+                                ?>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-auto">
+                                <a href="<?php echo esc_url(
+                                                add_query_arg(
+                                                    'product_slug',
+                                                    $product->product_slug,
+                                                    get_permalink(get_option('aboyuma_product_page_id'))
+                                                )
+                                            ); ?>"
+                                    class="btn btn-sm btn-outline-primary">
+                                    ดูรายละเอียด →
+                                </a>
+                            </div>
+                        </div>
+
                     </td>
 
                 </tr>

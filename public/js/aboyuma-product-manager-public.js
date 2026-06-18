@@ -40,17 +40,12 @@
     if (isDesktop) {
       columnDefs = [
         {
-          width: "30%",
-          targets: [0],
+          width: "45%",
+          targets: 0,
         },
         {
           width: "55%",
-          targets: [1],
-        },
-        {
-          width: "25%",
-          targets: [2],
-          orderable: false,
+          targets: 1,
         },
       ];
     }
@@ -59,10 +54,6 @@
 
     if (table.length) {
       table.DataTable({
-        fixedColumns: {
-          start: 1,
-          end: 1,
-        },
         paging: true,
         scrollCollapse: true,
         scrollX: true,

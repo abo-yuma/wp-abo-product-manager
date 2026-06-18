@@ -30,7 +30,7 @@
         <div class="d-flex flex-wrap gap-2 mb-3">
 
             <?php if (!empty($product->brand_name)) : ?>
-                <span class="badge text-bg-primary">
+                <span class="badge text-bg-secondary">
                     🏷️ <?php echo esc_html($product->brand_name); ?>
                 </span>
             <?php endif; ?>
@@ -119,7 +119,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="btn btn-primary btn-sm rounded-3">
-                        🛍️ ดูสินค้าที่ Amway
+                        ดูสินค้าที่ Amway
                     </a>
                 </div>
             <?php endif; ?>
@@ -434,7 +434,7 @@
                 id="propertyModal-<?php echo esc_attr($property->property_key); ?>"
                 tabindex="-1">
 
-                <div class="modal-dialog modal-md">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
 
                         <div class="modal-header">
