@@ -1,134 +1,159 @@
-<?php if (empty($products)) return; ?>
+<?php
 
-<div class="aboyuma-products-list my-4">
+/**
+ * Product list template.
+ *
+ * Variables passed from caller:
+ *
+ * @var array $products
+ * @var array $categories
+ */
+if (empty($products)) return;
+?>
 
+<div class="aboyuma-products-list">
 
+    <div class="card border-0 mb-4">
 
-    <table id="aboyuma-product-list-table"
-        class="table"
-        style="height:fit-content">
+        <div class="card-body p-0">
 
-        <thead>
-            <tr>
-                <th>🛍️ สินค้า</th>
-                <th>📝 รายละเอียด</th>
-            </tr>
-        </thead>
+            <h2 class="h5 mb-2">
+                🔍 ค้นหาสินค้าที่ต้องการ
+            </h2>
 
-        <tbody>
-            <?php foreach ($products as $product): ?>
+            <p class="text-muted mb-3">
+                กรอกปัญหา หรือชื่อสินค้าที่กำลังมองหา
+            </p>
 
-                <tr style="height:100%">
+            <form id="aboyuma-product-search-form">
 
-                    <!-- Product Column -->
-                    <td class="text-center align-middle">
+                <!-- Category Row -->
+                <div class="row g-2 mb-2">
 
-                        <?php
-                        $image_url = '';
+                    <!-- Parent Category -->
+                    <div class="col-auto">
 
-                        if (!empty($product->main_image_id)) {
-                            $image_url = wp_get_attachment_image_url(
-                                $product->main_image_id,
-                                'medium'
-                            );
-                        }
-                        ?>
+                        <select
+                            id="parent_category"
+                            class="form-select form-select-sm"
+                            style="width:170px;">
 
-                        <?php if ($image_url): ?>
-                            <img
-                                src="<?php echo esc_url($image_url); ?>"
-                                alt="<?php echo esc_attr($product->product_name); ?>"
-                                class="img-fluid mb-2">
-                        <?php else: ?>
-                            <div class="mb-2 text-muted small">
-                                No image
-                            </div>
-                        <?php endif; ?>
+                            <option value="">
+                                ทุกหมวดหมู่หลัก
+                            </option>
 
-                        <div class="fw-semibold">
-                            <?php echo esc_html($product->product_name); ?>
-                        </div>
+                            <?php foreach ($categories as $category) : ?>
 
-                    </td>
+                                <?php if ((int) $category->parent_id === 0) : ?>
 
-                    <!-- Description Column -->
-                    <td>
-                        <div class="d-flex flex-column h-100">
-                            <!-- Brand + Category -->
-                            <div class="d-flex flex-wrap gap-2 mb-2">
-
-                                <?php if (!empty($product->brand_name)) : ?>
-                                    <span class="badge text-bg-secondary">
-                                        🏷️ <?php echo esc_html($product->brand_name); ?>
-                                    </span>
-                                <?php endif; ?>
-
-                                <?php if (!empty($product->category_name)) : ?>
-                                    <span class="badge text-bg-secondary">
-                                        🗂️ <?php echo esc_html($product->category_name); ?>
-                                    </span>
-                                <?php endif; ?>
-
-                            </div>
-
-                            <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-
-                                <?php if ($product->product_member_price > 0) : ?>
-
-                                    <!-- Regular Price -->
-                                    <span class="small">
-                                        ราคา :
-                                        <del>
-                                            ฿<?php echo number_format($product->product_price, 2); ?>
-                                        </del>
-                                    </span>
-
-                                    <!-- Member Price -->
-                                    <span class="fw-semibold">
-                                        💳 ฿<?php echo number_format($product->product_member_price, 2); ?>
-                                        <span class="text-danger small">*เฉพาะสมาชิก</span>
-                                    </span>
-
-                                <?php else : ?>
-
-                                    <!-- Regular Price Only -->
-                                    <span class="fw-semibold text-dark">
-                                        ฿<?php echo number_format($product->product_price, 2); ?>
-                                    </span>
+                                    <option value="<?php echo esc_attr($category->id); ?>">
+                                        <?php echo esc_html($category->category_name); ?>
+                                    </option>
 
                                 <?php endif; ?>
 
-                            </div>
+                            <?php endforeach; ?>
 
-                            <div class="mb-2">
-                                <?php
-                                echo esc_html(
-                                    wp_trim_words($product->product_description, 25, '...')
-                                );
-                                ?>
-                            </div>
+                        </select>
 
-                            <div class="d-flex justify-content-end mt-auto">
-                                <a href="<?php echo esc_url(
-                                                add_query_arg(
-                                                    'product_slug',
-                                                    $product->product_slug,
-                                                    get_permalink(get_option('aboyuma_product_page_id'))
-                                                )
-                                            ); ?>"
-                                    class="btn btn-sm btn-outline-primary">
-                                    ดูรายละเอียด →
-                                </a>
-                            </div>
-                        </div>
+                    </div>
 
-                    </td>
+                    <!-- Subcategory -->
+                    <div class="col-auto">
 
+                        <select
+                            id="product_subcategory"
+                            class="form-select form-select-sm"
+                            style="width:170px;">
+
+                            <option value="">
+                                ทุกหมวดหมู่ย่อย
+                            </option>
+
+                            <?php foreach ($categories as $category) : ?>
+
+                                <?php if ((int) $category->parent_id > 0) : ?>
+
+                                    <option
+                                        value="<?php echo esc_attr($category->id); ?>"
+                                        data-parent-id="<?php echo esc_attr($category->parent_id); ?>"
+                                        style="display:none;">
+                                        <?php echo esc_html($category->category_name); ?>
+                                    </option>
+
+                                <?php endif; ?>
+
+                            <?php endforeach; ?>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- Search Row -->
+                <div class="row g-2">
+
+                    <!-- Keyword -->
+                    <div class="col">
+
+                        <input
+                            type="text"
+                            id="aboyuma-product-search-keyword"
+                            class="form-control form-control-sm"
+                            placeholder="เช่น อ่อนเพลีย, ผิวแห้ง, โปรตีน">
+
+                    </div>
+
+                    <!-- Search Button -->
+                    <div class="col-auto">
+
+                        <button
+                            id="aboyuma-product-search-button"
+                            type="button"
+                            class="btn btn-sm btn-light">
+
+                            ค้นหา
+
+                        </button>
+
+                        <button
+                            type="reset"
+                            class="btn btn-sm btn-light">
+
+                            รีเซ็ต
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div id="aboyuma-product-table-wrapper">
+
+        <div id="aboyuma-product-search-message"></div>
+        <table id="aboyuma-product-list-table"
+            class="table"
+            style="height:fit-content">
+
+            <thead>
+                <tr>
+                    <th>🛍️ สินค้า</th>
+                    <th>📝 รายละเอียด</th>
                 </tr>
+            </thead>
 
-            <?php endforeach; ?>
-        </tbody>
+            <tbody>
+                <?php require plugin_dir_path(__FILE__) .
+                    'template-product-list-rows.php'; ?>
+            </tbody>
 
-    </table>
-
+        </table>
+    </div>
 </div>

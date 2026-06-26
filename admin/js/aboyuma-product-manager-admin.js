@@ -104,10 +104,11 @@
           $subSelect.html('<option value="">Loading...</option>');
 
           $.ajax({
-            url: ajaxurl,
+            url: categorySelection.ajaxurl,
             method: "GET",
             data: {
               action: "get_subcategories",
+              nonce: categorySelection.nonce,
               parent_id: parentId,
             },
             dataType: "json",

@@ -224,6 +224,7 @@ class Aboyuma_Product_Admin {
                 'product_specification'    => $data['product_specification'],
                 'product_comment'          => $data['product_comment'],
                 'product_review'           => $data['product_review'],
+                'product_search_keywords' => $data['product_search_keywords'],
                 'product_price'            => number_format($data['product_price'], 2, '.', ''),
                 'product_member_price'     => number_format($data['product_member_price'], 2, '.', ''),
                 'product_shop_link'        => $data['product_shop_link'],
@@ -247,6 +248,7 @@ class Aboyuma_Product_Admin {
                 '%s', // product_specification
                 '%s', // product_comment
                 '%s', // product_review
+                '%s', // product_search_keywords
                 '%f', // product_price
                 '%f', // product_member_price
                 '%s', // product_shop_link
@@ -417,6 +419,7 @@ class Aboyuma_Product_Admin {
                 'product_specification'    => $data['product_specification'],
                 'product_comment'          => $data['product_comment'],
                 'product_review'           => $data['product_review'],
+                'product_search_keywords'  => $data['product_search_keywords'],
                 'product_price'            => number_format($data['product_price'], 2, '.', ''),
                 'product_member_price'     => number_format($data['product_member_price'], 2, '.', ''),
                 'product_shop_link'        => $data['product_shop_link'],
@@ -427,26 +430,27 @@ class Aboyuma_Product_Admin {
             ],
             ['id' => $product_id],
             [
-                '%d',
-                '%s',
-                '%d',
-                '%d',
-                '%s',
-                '%d',
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%f',
-                '%f',
-                '%s',
-                '%s',
-                '%d',
-                '%s',
-                '%s'
+                '%d', // main_image_id
+                '%s', // product_code
+                '%d', // product_brand_id
+                '%d', // product_category_id
+                '%s', // product_name
+                '%d', // product_unit_count
+                '%s', // product_unit_type
+                '%s', // product_unit_usage
+                '%s', // product_description
+                '%s', // product_detail
+                '%s', // product_specification
+                '%s', // product_comment
+                '%s', // product_review
+                '%s', // product_search_keywords
+                '%f', // product_price
+                '%f', // product_member_price
+                '%s', // product_shop_link
+                '%s', // product_sale_article_link
+                '%d', // product_is_pinned
+                '%s', // product_slug
+                '%s', // modified
             ],
             ['%d']
         );
@@ -886,6 +890,10 @@ class Aboyuma_Product_Admin {
             'product_comment'           => wp_kses_post($post['product_comment'] ?? ''),
             'product_review'            => wp_kses_post($post['product_review'] ?? ''),
 
+            'product_search_keywords' => sanitize_textarea_field(
+                $post['product_search_keywords'] ?? ''
+            ),
+
             'product_price'        => (float) ($post['product_price'] ?? 0),
             'product_member_price' => (float) ($post['product_member_price'] ?? 0),
 
@@ -968,7 +976,13 @@ class Aboyuma_Product_Admin {
      * @return void
      */
     public function get_subcategories() {
-        $parent_id = isset($_GET['parent_id']) ? intval($_GET['parent_id']) : 0;
+        check_ajax_referer(
+            'aboyuma_category_selection',
+            'nonce'
+        );
+        $parent_id = absint(
+            $_GET['parent_id'] ?? 0
+        );
         $results = $this->wpdb->get_results(
             $this->wpdb->prepare("SELECT id, category_name FROM {$this->wpdb->prefix}aboyuma_product_category WHERE parent_id = %d", $parent_id)
         );

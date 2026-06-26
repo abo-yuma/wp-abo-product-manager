@@ -283,6 +283,15 @@ class Aboyuma_Product_Manager_Public {
 			$this->version,
 			true
 		);
+
+		wp_localize_script(
+			$this->plugin_name,
+			'productSearch',
+			[
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce'   => wp_create_nonce('aboyuma_product_search'),
+			]
+		);
 	}
 
 	/**
@@ -316,6 +325,22 @@ class Aboyuma_Product_Manager_Public {
 	 * For the single product detail (virtual page),
 	 * display template only.
 	 * 
+	 * v1.0.0
+	 * Product Page
+	 *      -> get_products()
+	 *      -> template-product-list.php
+	 *
+	 * Product Detail
+	 *      -> get_product_relational_data()
+	 *      -> template-product-detail.php
+	 *
+	 * v1.1.0
+	 * Product Search
+	 *      -> ajax_search_products()
+	 *      -> get_products()
+	 *      -> template-product-list-rows.php
+	 *      -> JSON Response
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $content Original page content.
@@ -339,24 +364,17 @@ class Aboyuma_Product_Manager_Public {
 		 */
 		if (!$product_slug) {
 
-			$products = $wpdb->get_results(
-				"SELECT 
-				p.product_name,
-				p.main_image_id,
-				p.product_description,
-				p.product_price,
-				p.product_member_price,
-				p.product_shop_link,
-				p.product_slug,
-				b.brand_name,
-				c.category_name
-				FROM {$this->table_product} p
-				LEFT JOIN {$this->table_brand} b 
-					ON p.product_brand_id = b.id
-				LEFT JOIN {$this->table_category} c 
-					ON p.product_category_id = c.id
+			$products = $this->get_products();
+			// Prepare category list for search filter dropdown.
+			$categories = $this->wpdb->get_results(
+				"SELECT
+					id,
+					category_name,
+					parent_id
+				FROM {$this->table_category}
+				ORDER BY parent_id ASC, category_name ASC
 				"
-			);
+			) ?: [];
 
 			if (!empty($products)) {
 
@@ -424,6 +442,146 @@ class Aboyuma_Product_Manager_Public {
 
 			return '';
 		}
+	}
+
+	/**
+	 * AJAX product search handler.
+	 *
+	 * Search products by keyword, parent category,
+	 * and subcategory from the public product
+	 * search form.
+	 *
+	 * Returns rendered HTML table rows for
+	 * updating the product list without
+	 * reloading the page.
+	 * 
+	 * Flow:
+	 * Search Form
+	 *      -> ajax_search_products()
+	 *      -> get_products()
+	 *      -> template-product-list-rows.php
+	 *      -> wp_send_json_success()
+	 * 
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	public function ajax_search_products() {
+
+		check_ajax_referer(
+			'aboyuma_product_search',
+			'nonce'
+		);
+
+		$keyword = sanitize_text_field(
+			$_POST['keyword'] ?? ''
+		);
+
+		$parent_category_id = absint(
+			$_POST['parent_category_id'] ?? 0
+		);
+
+		$subcategory_id = absint(
+			$_POST['subcategory_id'] ?? 0
+		);
+
+		$products = $this->get_products(
+			$keyword,
+			$parent_category_id,
+			$subcategory_id
+		);
+
+		// Render filtered product rows.
+		ob_start();
+
+		require plugin_dir_path(__FILE__) .
+			'partials/template-product-list-rows.php';
+
+		$html = ob_get_clean();
+
+		wp_send_json_success([
+			'html' => $html,
+			'count' => count($products),
+		]);
+	}
+
+	/**
+	 * Get products for public listing.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $keyword Search keyword.
+	 * @param int    $parent_category_id Parent category ID.
+	 * @param int    $subcategory_id Subcategory ID.
+	 * @return array
+	 */
+	private function get_products(
+		string $keyword = '',
+		int $parent_category_id = 0,
+		int $subcategory_id = 0
+	): array {
+
+		$sql = "
+			SELECT
+				p.product_name,
+				p.main_image_id,
+				p.product_description,
+				p.product_price,
+				p.product_member_price,
+				p.product_shop_link,
+				p.product_slug,
+				p.product_search_keywords,
+				b.brand_name,
+				c.id AS category_id,
+				c.parent_id,
+				c.category_name
+			FROM {$this->table_product} p
+			LEFT JOIN {$this->table_brand} b
+				ON p.product_brand_id = b.id
+			LEFT JOIN {$this->table_category} c
+				ON p.product_category_id = c.id
+			WHERE 1 = 1";
+
+		$params = [];
+
+		// Keyword filter
+		if (!empty($keyword)) {
+
+			$sql .= " AND (p.product_name LIKE %s OR p.product_search_keywords LIKE %s)";
+
+			$like = '%' . $this->wpdb->esc_like($keyword) . '%';
+
+			$params[] = $like;
+			$params[] = $like;
+		}
+
+		// Subcategory filter
+		if ($subcategory_id > 0) {
+
+			$sql .= " AND p.product_category_id = %d";
+
+			$params[] = $subcategory_id;
+		}
+
+		// Parent category filter
+		elseif ($parent_category_id > 0) {
+
+			$sql .= " AND (p.product_category_id = %d OR c.parent_id = %d)";
+
+			$params[] = $parent_category_id;
+			$params[] = $parent_category_id;
+		}
+
+		$sql .= " ORDER BY p.product_name ASC";
+
+		if (!empty($params)) {
+
+			return $this->wpdb->get_results(
+				$this->wpdb->prepare($sql, $params)
+			) ?: [];
+		}
+
+		return $this->wpdb->get_results($sql) ?: [];
 	}
 
 	/**

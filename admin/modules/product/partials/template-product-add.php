@@ -1,3 +1,8 @@
+<?php
+/** @var stdClass[] $brands */
+/** @var stdClass[] $categories */
+/** @var stdClass[] $properties */
+?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Add New Product</h1>
     <hr class="wp-header-end">
@@ -350,6 +355,27 @@
                         value="<?php echo esc_attr($_POST['product_tags'] ?? ''); ?>">
                     <p class="description">
                         ระบุคำค้น (Tag) เพื่อช่วยในการค้นหาสินค้า คั่นแต่ละคำด้วย comma (,)
+                    </p>
+                </td>
+            </tr>
+
+            <!-- SEARCH KEYWORDS -->
+            <tr>
+                <th>
+                    <label for="product_search_keywords">
+                        Product Search Keywords
+                    </label>
+                </th>
+                <td>
+                    <textarea
+                        name="product_search_keywords"
+                        id="product_search_keywords"
+                        rows="4"
+                        class="large-text"><?php echo esc_textarea($_POST['product_search_keywords'] ?? ''); ?></textarea>
+
+                    <p class="description">
+                        คำค้นสำหรับช่วยค้นหาสินค้าในระบบ คั่นแต่ละคำด้วย comma (,)
+                        เช่น อ่อนเพลีย,วิตามินรวม,สารอาหารไม่ครบ,ภูมิคุ้มกัน
                     </p>
                 </td>
             </tr>

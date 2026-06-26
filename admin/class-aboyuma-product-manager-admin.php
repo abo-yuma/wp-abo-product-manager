@@ -234,6 +234,15 @@ class Aboyuma_Product_Manager_Admin {
 				'nonce'   => wp_create_nonce('aboyuma_product_delete'),
 			]
 		);
+
+		wp_localize_script(
+			$this->plugin_name,
+			'categorySelection',
+			[
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce'   => wp_create_nonce('aboyuma_category_selection'),
+			]
+		);
 	}
 
 	/**
