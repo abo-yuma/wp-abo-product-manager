@@ -35,8 +35,11 @@
       console.error("DataTables not loaded");
       return;
     }
+
     const isDesktop = window.matchMedia("(min-width: 769px)").matches;
+
     let columnDefs = [];
+
     if (isDesktop) {
       columnDefs = [
         {
@@ -50,10 +53,15 @@
       ];
     }
 
-    var table = $("#aboyuma-product-list-table");
-
-    if (table.length) {
-      table.DataTable({
+    /**
+     * Initialize product DataTable.
+     *
+     * Used:
+     * - Initial page load
+     * - After AJAX search refresh
+     */
+    function initProductDataTable() {
+      return $("#aboyuma-product-list-table").DataTable({
         paging: true,
         scrollCollapse: true,
         scrollX: true,
@@ -61,10 +69,91 @@
         autoWidth: false,
         responsive: true,
         columnDefs: columnDefs,
-        info: false,
+        info: true,
         ordering: true,
+        dom: "lrtip",
       });
     }
+
+    let table = null;
+
+    if ($("#aboyuma-product-list-table").length) {
+      table = initProductDataTable();
+    }
+
+    /**
+     * AJAX product search flow.
+     *
+     * User clicks the "Search" button
+     *      ↓
+     * JavaScript collects:
+     *      - keyword
+     *      - parent category
+     *      - subcategory
+     *      ↓
+     * JavaScript sends an AJAX request
+     * to WordPress admin-ajax.php
+     *      ↓
+     * WordPress routes the request
+     * using action=aboyuma_search_products
+     *      ↓
+     * ajax_search_products() is executed [entry point]
+     *      ↓
+     * Search filters are validated and sanitized
+     *      ↓
+     * get_products() queries the database
+     *      ↓
+     * Matching products are passed to
+     * template-product-list-rows.php
+     *      ↓
+     * PHP generates table row HTML
+     * using output buffering
+     *      ↓
+     * HTML is returned as a JSON response
+     *      ↓
+     * JavaScript receives the response
+     *      ↓
+     * Existing table rows are replaced
+     * with the new search results
+     *      ↓
+     * DataTable is re-initialized
+     * without reloading the page
+     */
+    $("#aboyuma-product-search-button").on("click", function () {
+      const keyword = $("#aboyuma-product-search-keyword").val();
+      const parentCategoryId = $("#parent_category").val();
+      const subcategoryId = $("#product_subcategory").val();
+
+      $.ajax({
+        url: productSearch.ajaxurl,
+        type: "POST",
+        data: {
+          action: "aboyuma_search_products",
+          nonce: productSearch.nonce,
+          keyword: keyword,
+          parent_category_id: parentCategoryId,
+          subcategory_id: subcategoryId,
+        },
+      }).done(function (response) {
+        table.destroy();
+
+        $("#aboyuma-product-list-table tbody").html(response.data.html);
+
+        $("#aboyuma-product-search-message").html(`
+          <div class="alert alert-success alert-dismissible fade show mb-2" role="alert">
+              พบสินค้า ${response.data.count} รายการ
+              <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close">
+              </button>
+          </div>
+        `);
+
+        table = initProductDataTable();
+      });
+    });
 
     // Product image simple lightbox gallery
     var productImageLightbox = new SimpleLightbox(".product-lightbox", {
@@ -76,6 +165,23 @@
     // Fancybox videos
     Fancybox.bind("[data-fancybox]", {
       dragToClose: false,
+    });
+
+    $("#parent_category").on("change", function () {
+      const parentId = $(this).val();
+
+      $("#product_subcategory").val("");
+
+      $("#product_subcategory option").hide();
+      $("#product_subcategory option:first").show();
+
+      if (!parentId) {
+        return;
+      }
+
+      $(
+        '#product_subcategory option[data-parent-id="' + parentId + '"]',
+      ).show();
     });
   });
 })(jQuery);
