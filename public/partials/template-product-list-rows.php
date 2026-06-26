@@ -104,7 +104,7 @@ foreach ($products as $product):
                 <div class="d-flex justify-content-end mt-auto">
                     <a href="<?php echo esc_url(
                                     add_query_arg(
-                                        'product_slug',
+                                        'product',
                                         $product->product_slug,
                                         get_permalink(get_option('aboyuma_product_page_id'))
                                     )

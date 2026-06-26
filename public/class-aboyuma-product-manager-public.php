@@ -301,8 +301,8 @@ class Aboyuma_Product_Manager_Public {
 	 * Any custom query var added via rewrite rules will be stripped out
 	 * unless it is explicitly registered using the 'query_vars' filter.
 	 *
-	 * This method registers 'product_slug' so it can be accessed via:
-	 * get_query_var( 'product_slug' )
+	 * This method registers product slug so it can be accessed via:
+	 * get_query_var( 'product' )
 	 *
 	 * @since 1.0.0
 	 *
@@ -311,7 +311,7 @@ class Aboyuma_Product_Manager_Public {
 	 */
 	public function register_query_vars($vars) {
 
-		$vars[] = 'product_slug';
+		$vars[] = 'product';
 
 		return $vars;
 	}
@@ -356,7 +356,7 @@ class Aboyuma_Product_Manager_Public {
 
 		global $wpdb, $wp_query;
 		$product_slug = sanitize_title(
-			get_query_var('product_slug')
+			get_query_var('product')
 		);
 
 		/**
@@ -683,7 +683,7 @@ class Aboyuma_Product_Manager_Public {
 		$page_id = (int) get_option('aboyuma_product_page_id');
 
 		return add_query_arg(
-			'product_slug',
+			'product',
 			$product_slug,
 			get_permalink($page_id)
 		);
@@ -753,7 +753,7 @@ class Aboyuma_Product_Manager_Public {
 
 		// Retrieve product slug from query string.
 		$product_slug = sanitize_title(
-			get_query_var('product_slug')
+			get_query_var('product')
 		);
 
 		// Retrieve stored product page ID.
