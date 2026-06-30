@@ -1,4 +1,5 @@
 <?php
+
 /** @var stdClass $product */
 ?>
 <div class="product-detail-wrapper">
@@ -352,68 +353,76 @@
 
         <h2 class="h6 fw-semibold mb-3">▶️ วิดีโอที่เกี่ยวข้อง</h2>
 
-        <div class="row g-3">
+        <?php if (!empty($videos)) : ?>
 
-            <?php if (!empty($videos)) : ?>
-                <?php foreach ($videos as $video) : ?>
+            <?php foreach ($videos as $video) : ?>
 
-                    <?php
-                    $video_url = esc_url($video->video_url);
-                    $comment   = esc_html($video->video_comment);
+                <?php
+                $video_url = esc_url($video->video_url);
+                $comment   = esc_html($video->video_comment);
 
-                    // Extract YouTube ID
-                    preg_match('/(youtu\.be\/|v=)([A-Za-z0-9_-]+)/', $video_url, $matches);
-                    $youtube_id = $matches[2] ?? '';
+                // Extract YouTube ID
+                preg_match('/(?:youtu\.be\/|v=)([A-Za-z0-9_-]+)/', $video_url, $matches);
+                $youtube_id = $matches[1] ?? '';
 
-                    if (!$youtube_id) continue;
+                if (!$youtube_id) continue;
 
-                    $thumbnail = "https://img.youtube.com/vi/{$youtube_id}/hqdefault.jpg";
-                    ?>
+                $thumbnail = "https://img.youtube.com/vi/{$youtube_id}/hqdefault.jpg";
+                ?>
 
-                    <div class="col-md-6">
+                <div class="row g-3 mb-4">
 
-                        <div class="card border-0 h-100">
+                    <!-- Thumbnail -->
+                    <div class="col-md-4">
 
-                            <a href="https://www.youtube.com/watch?v=<?php echo $youtube_id; ?>"
-                                data-fancybox
-                                class="text-decoration-none">
+                        <a href="https://www.youtube.com/watch?v=<?php echo $youtube_id; ?>"
+                            data-fancybox
+                            class="text-decoration-none">
 
-                                <div class="position-relative">
+                            <div class="position-relative">
 
-                                    <img
-                                        src="<?php echo esc_url($thumbnail); ?>"
-                                        class="card-img-top"
-                                        loading="lazy"
-                                        alt="Product video">
+                                <img
+                                    src="<?php echo esc_url($thumbnail); ?>"
+                                    class="img-fluid rounded"
+                                    loading="lazy"
+                                    alt="Product video">
 
-                                    <img class="video-play-icon"
-                                        src="https://api.iconify.design/logos/youtube-icon.svg"
-                                        alt="Play">
+                                <img
+                                    class="video-play-icon"
+                                    src="https://api.iconify.design/logos/youtube-icon.svg"
+                                    alt="Play">
 
-                                </div>
+                            </div>
 
-                            </a>
-
-                            <?php if (!empty($comment)) : ?>
-                                <div class="card-body p-0 pt-2 small text-body-secondary">
-                                    <span class="me-1">📝</span>
-                                    <?php echo $comment; ?>
-                                </div>
-                            <?php endif; ?>
-
-                        </div>
+                        </a>
 
                     </div>
 
-                <?php endforeach; ?>
+                    <!-- Description -->
+                    <div class="col-md-8">
 
-            <?php else : ?>
-                <div class="alert alert-secondary text-center">
-                    ยังไม่มีวิดีโอที่เกี่ยวข้อง
+                        <?php if (!empty($comment)) : ?>
+
+                            <div class="pt-1 text-body-secondary">
+                                <span class="me-1">📝</span>
+                                <?php echo $comment; ?>
+                            </div>
+
+                        <?php endif; ?>
+
+                    </div>
+
                 </div>
-            <?php endif; ?>
 
-        </div>
+            <?php endforeach; ?>
+
+        <?php else : ?>
+
+            <div class="alert alert-secondary text-center">
+                ยังไม่มีวิดีโอที่เกี่ยวข้อง
+            </div>
+
+        <?php endif; ?>
 
     </section>
 

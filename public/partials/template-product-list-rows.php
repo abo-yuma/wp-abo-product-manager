@@ -93,7 +93,7 @@ foreach ($products as $product):
 
                 </div>
 
-                <div class="mb-2">
+                <div class="product-description mb-2">
                     <?php
                     echo esc_html(
                         wp_trim_words($product->product_description, 25, '...')
