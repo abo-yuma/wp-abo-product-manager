@@ -134,25 +134,58 @@
           parent_category_id: parentCategoryId,
           subcategory_id: subcategoryId,
         },
-      }).done(function (response) {
-        table.destroy();
+        beforeSend: function () {
+          $("#aboyuma-product-loading").removeClass("d-none").html(`
+              <div class="alert alert-info mb-2">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  กำลังค้นหาสินค้า...
+              </div>
+          `);
 
-        $("#aboyuma-product-list-table tbody").html(response.data.html);
+          $("#aboyuma-product-alert").empty();
+        },
+      })
+        .done(function (response) {
+          $("#aboyuma-product-loading").addClass("d-none").empty();
 
-        $("#aboyuma-product-search-message").html(`
-          <div class="alert alert-success alert-dismissible fade show mb-2" role="alert">
-              พบสินค้า ${response.data.count} รายการ
-              <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="alert"
-                  aria-label="Close">
-              </button>
-          </div>
-        `);
+          // Destroy DataTable เดิม
+          table.destroy();
 
-        table = initProductDataTable();
-      });
+          // เปลี่ยนข้อมูลใน tbody
+          $("#aboyuma-product-list-table tbody").html(response.data.html);
+
+          // สร้าง DataTable ใหม่
+          table = initProductDataTable();
+
+          $("#aboyuma-product-alert").html(`
+              <div class="alert alert-success alert-dismissible fade show mb-2">
+                  พบสินค้า ${response.data.count} รายการ
+                  <button
+                      class="btn-close"
+                      data-bs-dismiss="alert">
+                  </button>
+              </div>
+          `);
+        })
+        .fail(function () {
+          $("#aboyuma-product-loading").addClass("d-none").empty();
+
+          $("#aboyuma-product-alert").html(`
+              <div class="alert alert-danger alert-dismissible fade show mb-2">
+                  เกิดข้อผิดพลาดในการค้นหา
+                  <button
+                      class="btn-close"
+                      data-bs-dismiss="alert">
+                  </button>
+              </div>
+          `);
+        })
+
+        .always(function () {
+          $("#aboyuma-product-search-button")
+            .prop("disabled", false)
+            .text("ค้นหา");
+        });
     });
 
     // Product image simple lightbox gallery
