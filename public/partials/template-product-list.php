@@ -17,14 +17,6 @@ if (empty($products)) return;
 
         <div class="card-body p-0">
 
-            <h2 class="h5 mb-2">
-                🔍 ค้นหาสินค้าที่ต้องการ
-            </h2>
-
-            <p class="text-muted mb-3">
-                กรอกปัญหา หรือชื่อสินค้าที่กำลังมองหา
-            </p>
-
             <form id="aboyuma-product-search-form">
 
                 <!-- Category Row -->
@@ -111,7 +103,7 @@ if (empty($products)) return;
                         <button
                             id="aboyuma-product-search-button"
                             type="button"
-                            class="btn btn-sm btn-light">
+                            class="btn btn-sm btn-primary">
 
                             ค้นหา
 
@@ -137,7 +129,12 @@ if (empty($products)) return;
 
     <div id="aboyuma-product-table-wrapper">
 
-        <div id="aboyuma-product-search-message"></div>
+        <div id="aboyuma-product-loading" class="d-none mb-2">
+        </div>
+
+        <div id="aboyuma-product-alert">
+        </div>
+
         <table id="aboyuma-product-list-table"
             class="table"
             style="height:fit-content">
