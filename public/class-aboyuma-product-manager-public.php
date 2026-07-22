@@ -147,6 +147,12 @@ class Aboyuma_Product_Manager_Public {
 		 * class.
 		 */
 
+		$page_id = (int) get_option('aboyuma_product_page_id');
+
+		if (get_queried_object_id() != $page_id) {
+			return;
+		}
+
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/aboyuma-product-manager-public.css', array(), $this->version, 'all');
 
 		// DataTables Bootstrap 5 CSS
@@ -191,10 +197,10 @@ class Aboyuma_Product_Manager_Public {
 
 		// Fancybox
 		wp_enqueue_style(
-			'aboyuma-product-fancybox-css',
-			'https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css',
+			'aboyuma-product-fancybox',
+			'https://cdn.jsdelivr.net/npm/@fancyapps/ui@6/dist/fancybox/fancybox.css',
 			array(),
-			'5.0'
+			'6.1.14'
 		);
 	}
 
@@ -216,6 +222,12 @@ class Aboyuma_Product_Manager_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+
+		$page_id = (int) get_option('aboyuma_product_page_id');
+
+		if (get_queried_object_id() != $page_id) {
+			return;
+		}
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/aboyuma-product-manager-public.js', array('jquery'), $this->version, false);
 
@@ -269,10 +281,10 @@ class Aboyuma_Product_Manager_Public {
 
 		// Fancybox
 		wp_enqueue_script(
-			'aboyuma-product-fancybox-js',
-			'https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js',
+			'aboyuma-product-fancybox',
+			'https://cdn.jsdelivr.net/npm/@fancyapps/ui@6/dist/fancybox/fancybox.umd.js',
 			array(),
-			'5.0',
+			'6.1.14',
 			true
 		);
 
