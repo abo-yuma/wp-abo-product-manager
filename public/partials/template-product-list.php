@@ -93,7 +93,7 @@ if (empty($products)) return;
                             type="text"
                             id="aboyuma-product-search-keyword"
                             class="form-control form-control-sm"
-                            placeholder="เช่น อ่อนเพลีย, ผิวแห้ง, โปรตีน">
+                            placeholder="กรอกคำค้นหาภาษาไทย">
 
                     </div>
 
