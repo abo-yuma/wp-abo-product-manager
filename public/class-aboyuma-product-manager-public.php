@@ -542,7 +542,6 @@ class Aboyuma_Product_Manager_Public {
 				p.product_member_price,
 				p.product_shop_link,
 				p.product_slug,
-				p.product_search_keywords,
 				b.brand_name,
 				c.id AS category_id,
 				c.parent_id,
@@ -559,10 +558,16 @@ class Aboyuma_Product_Manager_Public {
 		// Keyword filter
 		if (!empty($keyword)) {
 
-			$sql .= " AND (p.product_name LIKE %s OR p.product_search_keywords LIKE %s)";
+			$sql .= "
+			AND (
+				p.product_name LIKE %s
+				OR p.product_description LIKE %s
+				OR p.product_detail LIKE %s
+			)";
 
 			$like = '%' . $this->wpdb->esc_like($keyword) . '%';
 
+			$params[] = $like;
 			$params[] = $like;
 			$params[] = $like;
 		}

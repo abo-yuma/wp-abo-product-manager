@@ -13,119 +13,115 @@ if (empty($products)) return;
 
 <div class="aboyuma-products-list">
 
-    <div class="card border-0 mb-4">
+    <form id="aboyuma-product-search-form" class="mb-3">
 
-        <div class="card-body p-0">
+        <!-- Category Row -->
+        <div class="row g-2 mb-2">
 
-            <form id="aboyuma-product-search-form">
+            <!-- Parent Category -->
+            <div class="col-auto">
 
-                <!-- Category Row -->
-                <div class="row g-2 mb-2">
+                <select
+                    id="parent_category"
+                    class="form-select form-select-sm"
+                    style="width:170px;">
 
-                    <!-- Parent Category -->
-                    <div class="col-auto">
+                    <option value="">
+                        ทุกหมวดหมู่หลัก
+                    </option>
 
-                        <select
-                            id="parent_category"
-                            class="form-select form-select-sm"
-                            style="width:170px;">
+                    <?php foreach ($categories as $category) : ?>
 
-                            <option value="">
-                                ทุกหมวดหมู่หลัก
+                        <?php if ((int) $category->parent_id === 0) : ?>
+
+                            <option value="<?php echo esc_attr($category->id); ?>">
+                                <?php echo esc_html($category->category_name); ?>
                             </option>
 
-                            <?php foreach ($categories as $category) : ?>
+                        <?php endif; ?>
 
-                                <?php if ((int) $category->parent_id === 0) : ?>
+                    <?php endforeach; ?>
 
-                                    <option value="<?php echo esc_attr($category->id); ?>">
-                                        <?php echo esc_html($category->category_name); ?>
-                                    </option>
+                </select>
 
-                                <?php endif; ?>
+            </div>
 
-                            <?php endforeach; ?>
+            <!-- Subcategory -->
+            <div class="col-auto">
 
-                        </select>
+                <select
+                    id="product_subcategory"
+                    class="form-select form-select-sm"
+                    style="width:170px;">
 
-                    </div>
+                    <option value="">
+                        ทุกหมวดหมู่ย่อย
+                    </option>
 
-                    <!-- Subcategory -->
-                    <div class="col-auto">
+                    <?php foreach ($categories as $category) : ?>
 
-                        <select
-                            id="product_subcategory"
-                            class="form-select form-select-sm"
-                            style="width:170px;">
+                        <?php if ((int) $category->parent_id > 0) : ?>
 
-                            <option value="">
-                                ทุกหมวดหมู่ย่อย
+                            <option
+                                value="<?php echo esc_attr($category->id); ?>"
+                                data-parent-id="<?php echo esc_attr($category->parent_id); ?>"
+                                style="display:none;">
+                                <?php echo esc_html($category->category_name); ?>
                             </option>
 
-                            <?php foreach ($categories as $category) : ?>
+                        <?php endif; ?>
 
-                                <?php if ((int) $category->parent_id > 0) : ?>
+                    <?php endforeach; ?>
 
-                                    <option
-                                        value="<?php echo esc_attr($category->id); ?>"
-                                        data-parent-id="<?php echo esc_attr($category->parent_id); ?>"
-                                        style="display:none;">
-                                        <?php echo esc_html($category->category_name); ?>
-                                    </option>
+                </select>
 
-                                <?php endif; ?>
-
-                            <?php endforeach; ?>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-                <!-- Search Row -->
-                <div class="row g-2">
-
-                    <!-- Keyword -->
-                    <div class="col">
-
-                        <input
-                            type="text"
-                            id="aboyuma-product-search-keyword"
-                            class="form-control form-control-sm"
-                            placeholder="กรอกคำค้นหาภาษาไทย">
-
-                    </div>
-
-                    <!-- Search Button -->
-                    <div class="col-auto">
-
-                        <button
-                            id="aboyuma-product-search-button"
-                            type="button"
-                            class="btn btn-sm btn-primary">
-
-                            ค้นหา
-
-                        </button>
-
-                        <button
-                            type="reset"
-                            class="btn btn-sm btn-light">
-
-                            รีเซ็ต
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </form>
+            </div>
 
         </div>
 
-    </div>
+        <!-- Search Row -->
+        <div class="row g-2">
+
+            <!-- Keyword -->
+            <div class="col">
+
+                <input
+                    type="text"
+                    id="aboyuma-product-search-keyword"
+                    class="form-control form-control-sm"
+                    placeholder="กรอกคำค้นหาภาษาไทย">
+
+            </div>
+
+            <!-- Search Button -->
+            <div class="col-auto">
+
+                <button
+                    id="aboyuma-product-search-button"
+                    type="button"
+                    class="btn btn-sm btn-primary">
+
+                    ค้นหา
+
+                </button>
+
+                <button
+                    type="reset"
+                    class="btn btn-sm btn-light">
+
+                    รีเซ็ต
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+
+
 
     <div id="aboyuma-product-table-wrapper">
 

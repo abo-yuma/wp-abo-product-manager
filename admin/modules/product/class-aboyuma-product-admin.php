@@ -224,7 +224,6 @@ class Aboyuma_Product_Admin {
                 'product_specification'    => $data['product_specification'],
                 'product_comment'          => $data['product_comment'],
                 'product_review'           => $data['product_review'],
-                'product_search_keywords' => $data['product_search_keywords'],
                 'product_price'            => number_format($data['product_price'], 2, '.', ''),
                 'product_member_price'     => number_format($data['product_member_price'], 2, '.', ''),
                 'product_shop_link'        => $data['product_shop_link'],
@@ -248,7 +247,6 @@ class Aboyuma_Product_Admin {
                 '%s', // product_specification
                 '%s', // product_comment
                 '%s', // product_review
-                '%s', // product_search_keywords
                 '%f', // product_price
                 '%f', // product_member_price
                 '%s', // product_shop_link
@@ -419,7 +417,6 @@ class Aboyuma_Product_Admin {
                 'product_specification'    => $data['product_specification'],
                 'product_comment'          => $data['product_comment'],
                 'product_review'           => $data['product_review'],
-                'product_search_keywords'  => $data['product_search_keywords'],
                 'product_price'            => number_format($data['product_price'], 2, '.', ''),
                 'product_member_price'     => number_format($data['product_member_price'], 2, '.', ''),
                 'product_shop_link'        => $data['product_shop_link'],
@@ -443,7 +440,6 @@ class Aboyuma_Product_Admin {
                 '%s', // product_specification
                 '%s', // product_comment
                 '%s', // product_review
-                '%s', // product_search_keywords
                 '%f', // product_price
                 '%f', // product_member_price
                 '%s', // product_shop_link
@@ -889,10 +885,6 @@ class Aboyuma_Product_Admin {
             'product_specification'     => wp_kses_post($post['product_specification'] ?? ''),
             'product_comment'           => wp_kses_post($post['product_comment'] ?? ''),
             'product_review'            => wp_kses_post($post['product_review'] ?? ''),
-
-            'product_search_keywords' => sanitize_textarea_field(
-                $post['product_search_keywords'] ?? ''
-            ),
 
             'product_price'        => (float) ($post['product_price'] ?? 0),
             'product_member_price' => (float) ($post['product_member_price'] ?? 0),

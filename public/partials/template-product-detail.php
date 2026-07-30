@@ -267,7 +267,7 @@
                     data-bs-target="#detail"
                     type="button"
                     role="tab">
-                    📝 รายละเอียด
+                    📝 เลคเชอร์
                 </button>
             </li>
 

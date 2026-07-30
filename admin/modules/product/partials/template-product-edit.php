@@ -538,26 +538,6 @@
                 </td>
             </tr>
 
-            <!-- SEARCH KEYWORDS -->
-            <tr>
-                <th>
-                    <label for="product_search_keywords">
-                        Product Search Keywords
-                    </label>
-                </th>
-                <td>
-                    <textarea
-                        name="product_search_keywords"
-                        rows="4"
-                        class="large-text"><?php echo esc_textarea($product->product_search_keywords ?? ''); ?></textarea>
-
-                    <p class="description">
-                        คำค้นสำหรับช่วยค้นหาสินค้าในระบบ คั่นแต่ละคำด้วย comma (,)
-                        เช่น อ่อนเพลีย,วิตามินรวม,สารอาหารไม่ครบ,ภูมิคุ้มกัน
-                    </p>
-                </td>
-            </tr>
-
             <!-- LINKS -->
             <?php
             $link_fields = [
