@@ -107,7 +107,6 @@ class Aboyuma_Product_Manager_Database {
 			product_specification LONGTEXT NOT NULL,
 			product_comment TEXT NULL,
 			product_review LONGTEXT NULL,
-            product_search_keywords TEXT NULL,
 			product_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 			product_member_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 			product_shop_link VARCHAR(255) NOT NULL,
