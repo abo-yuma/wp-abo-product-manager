@@ -1,3 +1,18 @@
+<?php
+
+/** @var stdClass $product */
+
+/** @var stdClass[] $brands */
+/** @var stdClass[] $categories */
+/** @var stdClass[] $properties */
+
+/** @var string[] $selected_properties */
+/** @var int[] $gallery_images */
+
+/** @var string $tags_string */
+
+/** @var stdClass[] $videos */
+?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Edit Product</h1>
     <hr class="wp-header-end">

@@ -1,86 +1,153 @@
-<?php if (empty($products)) return; ?>
+<?php
 
-<div class="aboyuma-products-list my-4">
+/**
+ * Product list template.
+ *
+ * Variables passed from caller:
+ *
+ * @var array $products
+ * @var array $categories
+ */
+if (empty($products)) return;
+?>
 
+<div class="aboyuma-products-list">
 
+    <form id="aboyuma-product-search-form" class="mb-3">
+        <h2 class="fs-6 mb-2">🔎 ค้นหาสินค้า</h2>
 
-    <table id="aboyuma-product-list-table"
-        class="table table-striped align-middle"
-        style="width:100%">
+        <!-- Category Row -->
+        <div class="row g-2 mb-2">
 
-        <thead>
-            <tr>
-                <th>🛍️ สินค้า</th>
-                <th>📝 คำอธิบาย</th>
-                <th>📋 รายละเอียด</th>
-            </tr>
-        </thead>
+            <!-- Parent Category -->
+            <div class="col-auto">
 
-        <tbody>
-            <?php foreach ($products as $product): ?>
+                <select
+                    id="parent_category"
+                    class="form-select form-select-sm"
+                    style="width:170px;">
 
+                    <option value="">
+                        ทุกหมวดหมู่หลัก
+                    </option>
 
-                <tr>
+                    <?php foreach ($categories as $category) : ?>
 
-                    <!-- Product Column -->
-                    <td class="text-center align-middle">
+                        <?php if ((int) $category->parent_id === 0) : ?>
 
-                        <?php
-                        $image_url = '';
+                            <option value="<?php echo esc_attr($category->id); ?>">
+                                <?php echo esc_html($category->category_name); ?>
+                            </option>
 
-                        if (!empty($product->main_image_id)) {
-                            $image_url = wp_get_attachment_image_url(
-                                $product->main_image_id,
-                                'medium'
-                            );
-                        }
-                        ?>
-
-                        <?php if ($image_url): ?>
-                            <img
-                                src="<?php echo esc_url($image_url); ?>"
-                                alt="<?php echo esc_attr($product->product_name); ?>"
-                                class="img-fluid mb-2">
-                        <?php else: ?>
-                            <div class="mb-2 text-muted small">
-                                No image
-                            </div>
                         <?php endif; ?>
 
-                        <div class="fw-semibold">
-                            <?php echo esc_html($product->product_name); ?>
-                        </div>
+                    <?php endforeach; ?>
 
-                    </td>
+                </select>
 
-                    <!-- Description Column -->
-                    <td>
-                        <?php
-                        echo esc_html(
-                            wp_trim_words($product->product_description, 25, '...')
-                        );
-                        ?>
-                    </td>
+            </div>
 
-                    <!-- View Button -->
-                    <td class="text-center">
-                        <a href="<?php echo esc_url(
-                                        add_query_arg(
-                                            'product_slug',
-                                            $product->product_slug,
-                                            get_permalink(get_option('aboyuma_product_page_id'))
-                                        )
-                                    ); ?>"
-                            class="btn btn-sm btn-outline-primary">
-                            ดูรายละเอียด
-                        </a>
-                    </td>
+            <!-- Subcategory -->
+            <div class="col-auto">
 
+                <select
+                    id="product_subcategory"
+                    class="form-select form-select-sm"
+                    style="width:170px;">
+
+                    <option value="">
+                        ทุกหมวดหมู่ย่อย
+                    </option>
+
+                    <?php foreach ($categories as $category) : ?>
+
+                        <?php if ((int) $category->parent_id > 0) : ?>
+
+                            <option
+                                value="<?php echo esc_attr($category->id); ?>"
+                                data-parent-id="<?php echo esc_attr($category->parent_id); ?>"
+                                style="display:none;">
+                                <?php echo esc_html($category->category_name); ?>
+                            </option>
+
+                        <?php endif; ?>
+
+                    <?php endforeach; ?>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- Search Row -->
+        <div class="row g-2">
+
+            <!-- Keyword -->
+            <div class="col">
+
+                <input
+                    type="text"
+                    id="aboyuma-product-search-keyword"
+                    class="form-control form-control-sm"
+                    placeholder="กรอกคำค้นหาภาษาไทย">
+
+            </div>
+
+            <!-- Search Button -->
+            <div class="col-auto">
+
+                <button
+                    id="aboyuma-product-search-button"
+                    type="button"
+                    class="btn btn-sm btn-primary">
+
+                    ค้นหา
+
+                </button>
+
+                <button
+                    type="reset"
+                    class="btn btn-sm btn-light">
+
+                    รีเซ็ต
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+
+
+
+    <div id="aboyuma-product-table-wrapper">
+
+        <div id="aboyuma-product-loading" class="d-none mb-2">
+        </div>
+
+        <div id="aboyuma-product-alert">
+        </div>
+
+        <table id="aboyuma-product-list-table"
+            class="table"
+            style="height:fit-content">
+
+            <thead>
+                <tr>
+                    <th>🛍️ สินค้า</th>
+                    <th>📝 รายละเอียด</th>
                 </tr>
+            </thead>
 
-            <?php endforeach; ?>
-        </tbody>
+            <tbody>
+                <?php require plugin_dir_path(__FILE__) .
+                    'template-product-list-rows.php'; ?>
+            </tbody>
 
-    </table>
-
+        </table>
+    </div>
 </div>

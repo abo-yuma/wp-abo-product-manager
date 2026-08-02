@@ -17,20 +17,20 @@
         </div>
     <?php endif; ?>
 
-    <table id="aboyuma-product-brand-table" class="wp-list-table widefat striped">
+    <?php if (!empty($brands)) : ?>
+        <table id="aboyuma-product-brand-table" class="wp-list-table widefat striped">
 
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Created</th>
-                <th>Modified</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            <?php if (!empty($brands)) : ?>
+            <tbody>
                 <?php foreach ($brands as $row) : ?>
                     <tr>
                         <td class="column-image">
@@ -65,12 +65,14 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else : ?>
-                <tr>
-                    <td colspan="5">No brands found.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-
-    </table>
+            </tbody>
+        <?php else : ?>
+            <div class="notice notice-info inline">
+                <p>
+                    You have no brands yet.
+                    Please create your first brand.
+                </p>
+            </div>
+        <?php endif; ?>
+        </table>
 </div>

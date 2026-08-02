@@ -267,6 +267,18 @@ class Aboyuma_Product_Manager {
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 
+		$this->loader->add_action(
+			'wp_ajax_aboyuma_search_products',
+			$plugin_public,
+			'ajax_search_products'
+		);
+
+		$this->loader->add_action(
+			'wp_ajax_nopriv_aboyuma_search_products',
+			$plugin_public,
+			'ajax_search_products'
+		);
+
 		$this->loader->add_filter('query_vars', $plugin_public, 'register_query_vars');
 
 		/**
@@ -317,6 +329,19 @@ class Aboyuma_Product_Manager {
 			'the_content',
 			$plugin_public,
 			'render_product_content'
+		);
+
+		// AJAX search
+		$this->loader->add_action(
+			'wp_ajax_aboyuma_search_products',
+			$plugin_public,
+			'ajax_search_products'
+		);
+
+		$this->loader->add_action(
+			'wp_ajax_nopriv_aboyuma_search_products',
+			$plugin_public,
+			'ajax_search_products'
 		);
 
 		$this->loader->add_action('after_setup_theme', $plugin_public, 'register_image_sizes');

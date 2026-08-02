@@ -1,3 +1,8 @@
+<?php
+/** @var stdClass[] $brands */
+/** @var stdClass[] $categories */
+/** @var stdClass[] $properties */
+?>
 <div class="wrap">
     <h1 class="wp-heading-inline">Add New Product</h1>
     <hr class="wp-header-end">

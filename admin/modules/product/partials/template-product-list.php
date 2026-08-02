@@ -19,23 +19,24 @@
         </div>
     <?php endif; ?>
 
-    <table id="aboyuma-product-table"
-        class="wp-list-table widefat striped">
+    <?php if (! empty($products)) : ?>
+        <table id="aboyuma-product-table"
+            class="wp-list-table widefat striped">
 
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Created</th>
-                <th>Modified</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <tbody>
+            <tbody>
 
-            <?php if (! empty($products)) : ?>
+
                 <?php foreach ($products as $row) : ?>
 
                     <tr>
@@ -98,15 +99,19 @@
                     </tr>
 
                 <?php endforeach; ?>
-            <?php else : ?>
 
-                <tr>
-                    <td colspan="5">No products found.</td>
-                </tr>
 
-            <?php endif; ?>
+            </tbody>
 
-        </tbody>
+        </table>
+    <?php else : ?>
 
-    </table>
+        <div class="notice notice-info inline">
+            <p>
+                You have no products yet.
+                Please create your first product.
+            </p>
+        </div>
+
+    <?php endif; ?>
 </div>
