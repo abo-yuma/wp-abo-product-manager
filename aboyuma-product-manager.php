@@ -16,7 +16,7 @@
  * Plugin Name:       ABO YUMA Product Manager
  * Plugin URI:        https://aboyuma.com
  * Description:       Product manager for ABO YUMA personal blog.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Yuma
  * Author URI:        https://aboyuma.com/
  * License:           GPL-2.0+
