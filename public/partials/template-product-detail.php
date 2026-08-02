@@ -84,6 +84,11 @@
 
                         <?php foreach ($gallery_images as $attachment_id) :
 
+                            // Do not display the thumbnail if it is the main image.
+                            if ($attachment_id == $product->main_image_id) {
+                                continue;
+                            }
+
                             $thumb = wp_get_attachment_image_url($attachment_id, 'thumbnail');
                             $medium = wp_get_attachment_image_url($attachment_id, 'product-400');
                             $full = wp_get_attachment_image_url($attachment_id, 'full');
