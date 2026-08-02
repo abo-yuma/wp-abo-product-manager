@@ -14,6 +14,7 @@ if (empty($products)) return;
 <div class="aboyuma-products-list">
 
     <form id="aboyuma-product-search-form" class="mb-3">
+        <h2 class="fs-6 mb-2">🔎 ค้นหาสินค้า</h2>
 
         <!-- Category Row -->
         <div class="row g-2 mb-2">
