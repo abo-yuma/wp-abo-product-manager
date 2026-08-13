@@ -28,10 +28,12 @@ foreach ($products as $product):
             ?>
 
             <?php if ($image_url): ?>
-                <img
-                    src="<?php echo esc_url($image_url); ?>"
-                    alt="<?php echo esc_attr($product->product_name); ?>"
-                    class="img-fluid mb-2">
+                <div class="product-list-image mb-2">
+                    <img
+                        src="<?php echo esc_url($image_url); ?>"
+                        alt="<?php echo esc_attr($product->product_name); ?>"
+                        class="img-fluid">
+                </div>
             <?php else: ?>
                 <div class="mb-2 text-muted small">
                     No image
